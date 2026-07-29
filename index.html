@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0YLDE1DNDB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0YLDE1DNDB');
+    </script>
+
+    <!-- ↓ Google AdSenseの審査用コード ↓ -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7252507673212109" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-7252507673212109">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>「まち」か「ちょう」か？ 全国町名サーチ＆クイズ</title>
+    <style>
+        body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background-color: #f0f4f8; color: #333; text-align: center; padding: 20px 10px; margin: 0; }
+        .container { max-width: 550px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; }
+        .tabs { display: flex; background-color: #2c3e50; }
+        /* タブが4つになったので文字サイズと余白を少し調整しました */
+        .tab { flex: 1; padding: 12px 0; color: white; font-size: 13px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        .tab.active { background-color: #3498db; }
+        .tab:not(.active):hover { background-color: #34495e; }
+        .content { padding: 30px 20px; display: none; }
+        .content.active { display: block; }
+        h1 { font-size: 22px; color: #2c3e50; margin-top: 0; }
+        input[type="text"] { width: 80%; padding: 12px; margin-top: 15px; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-search { margin-top: 15px; padding: 12px 24px; font-size: 16px; color: white; background-color: #3498db; border: none; border-radius: 8px; cursor: pointer; }
+        .btn-search:hover { background-color: #2980b9; }
+        #search-result { margin-top: 30px; font-size: 18px; font-weight: bold; line-height: 1.6; }
+        #question-box { font-size: 36px; font-weight: bold; letter-spacing: 2px; margin: 20px 0; padding: 30px; background-color: #ecf0f1; border-radius: 8px; }
+        .btn-machi, .btn-chou { width: 45%; padding: 15px; font-size: 22px; font-weight: bold; color: white; border: none; border-radius: 8px; cursor: pointer; margin: 10px 2%; }
+        .btn-machi { background-color: #e67e22; }
+        .btn-chou { background-color: #27ae60; }
+        .btn-machi:hover, .btn-chou:hover { opacity: 0.8; }
+        #quiz-result { margin-top: 20px; font-size: 22px; font-weight: bold; min-height: 90px; }
+        .btn-next { display: none; margin-top: 15px; padding: 10px 30px; font-size: 16px; background-color: #34495e; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .machi { color: #e67e22; font-size: 26px; }
+        .chou { color: #27ae60; font-size: 26px; }
+        .furusato-box { margin-top: 25px; padding: 15px; background-color: #fff5f5; border: 1px dashed #e74c3c; border-radius: 8px; }
+        .furusato-btn { display: inline-block; margin-top: 10px; padding: 10px 20px; background-color: #e74c3c; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; font-weight: bold; }
+        .furusato-btn:hover { background-color: #c0392b; }
+        #streak-box { font-size: 18px; font-weight: bold; color: #2c3e50; margin-top: -10px; margin-bottom: 15px; padding: 10px; background-color: #fffacd; border-radius: 8px; display: inline-block; }
+        #streak-count { font-size: 26px; color: #e74c3c; }
+        .share-x-btn { display: inline-block; margin-top: 15px; padding: 10px 20px; background-color: #0f1419; color: white; text-decoration: none; border-radius: 5px; font-size: 14px; font-weight: bold; transition: opacity 0.2s; }
+        .share-x-btn:hover { opacity: 0.8; }
+        
+        /* 読み物用テキストのスタイル */
+        .article-text { text-align: left; font-size: 14px; line-height: 1.8; color: #444; }
+        .article-text h2 { font-size: 18px; color: #3498db; border-left: 4px solid #3498db; padding-left: 10px; margin-top: 30px; }
+        .article-text h3 { font-size: 16px; color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; margin-top: 20px; }
+        .article-text ul { padding-left: 20px; }
+        .article-text li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('search')">🔍 検索</div>
+        <div class="tab" onclick="switchTab('quiz')">🎮 クイズ</div>
+        <div class="tab" onclick="switchTab('guide')">📖 豆知識</div>
+        <div class="tab" onclick="switchTab('policy')">📝 ポリシー</div>
+    </div>
+
+    <!-- 検索タブ -->
+    <div id="tab-search" class="content active">
+        <h1>🗾 町名読み方検索</h1>
+        <p>調べたい町名を入力してください</p>
+        <p style="font-size: 12px; color: #666; margin-top:-10px;">全国743件の「まち」「ちょう」の読み方を瞬時に判定します。</p>
+        <input type="text" id="searchInput" placeholder="例: 屋久島、箱根、雫石">
+        <button class="btn-search" onclick="searchTown()">検索</button>
+        <div id="search-result"></div>
+<!-- ▼▼ ここから貼り付け：都道府県から探す（77行目の直後に挿入）▼▼ -->
+<section class="pref-nav">
+  <h2>🗾 都道府県から町名を探す</h2>
+  <p class="pref-lead">全国743件の「町」を都道府県別に一覧できます。気になる地域から読み方をチェック！</p>
+    <div class="pref-group">
+      <h3>北海道</h3>
+      <div class="pref-chips">
+        <a class="pref-chip" href="/pref/hokkaido/">北海道<span>129</span></a>
+      </div>
+    </div>
+    <div class="pref-group">
+      <h3>東北</h3>
+      <div class="pref-chips">
+        <a class="pref-chip" href="/pref/aomori/">青森県<span>22</span></a>
+        <a class="pref-chip" href="/pref/iwate/">岩手県<span>15</span></a>
+        <a class="pref-chip" href="/pref/miyagi/">宮城県<span>20</span></a>
+        <a class="pref-chip" href="/pref/akita/">秋田県<span>9</span></a>
+        <a class="pref-chip" href="/pref/yamagata/">山形県<span>19</span></a>
+        <a class="pref-chip" href="/pref/fukushima/">福島県<span>31</span></a>
+      </div>
+    </div>
+    <div class="pref-group">
+      <h3>関東</h3>
+      <div class="pref-chips">
+        <a class="pref-chip" href="/pref/ibaraki/">茨城県<span>10</span></a>
+        <a class="pref-chip" href="/pref/tochigi/">栃木県<span>11</span></a>
+        <a class="pref-chip" href="/pref/gunma/">群馬県<span>15</span></a>
+        <a class="pref-chip" href="/pref/saitama/">埼玉県<span>22</span></a>
+        <a class="pref-chip" href="/pref/chiba/">千葉県<span>16</span></a>
+        <a class="pref-chip" href="/pref/tokyo/">東京都<span>5</span></a>
+        <a class="pref-chip" href="/pref/kanagawa/">神奈川県<span>13</span></a>
+      </div>
+    </div>
+    <div class="pref-group">
+      <h3>中部</h3>
+      <div class="pref-chips">
+        <a class="pref-chip" href="/pref/niigata/">新潟県<span>6</span></a>
+        <a class="pref-chip" href="/pref/toyama/">富山県<span>4</span></a>
+        <a class="pref-chip" href="/pref/ishikawa/">石川県<span>8</span></a>
+        <a class="pref-chip" href="/pref/fukui/">福井県<span>8</span></a>
+        <a class="pref-chip" href="/pref/yamanashi/">山梨県<span>8</span></a>
+        <a class="pref-chip" href="/pref/nagano/">長野県<span>23</span></a>
+        <a class="pref-chip" href="/pref/gifu/">岐阜県<span>19</span></a>
+        <a class="pref-chip" href="/pref/shizuoka/">静岡県<span>12</span></a>
+        <a class="pref-chip" href="/pref/aichi/">愛知県<span>14</span></a>
+      </div>
+    </div>
+    <div class="pref-group">
+      <h3>近畿</h3>
+      <div class="pref-chips">
+        <a class="pref-chip" href="/pref/mie/">三重県<span>15</span></a>
+        <a class="pref-chip" href="/pref/shiga/">滋賀県<span>6</span></a>
+        <a class="pref-chip" href="/pref/kyoto/">京都府<span>10</span></a>
+        <a class="pref-chip" href="/pref/osaka/">大阪府<span>9</span></a>
+        <a class="pref-chip" href="/pref/hyogo/">兵庫県<span>12</span></a>
+        <a class="pref-chip" href="/pref/nara/">奈良県<span>15</span></a>
+        <a class="pref-chip" href="/pref/wakayama/">和歌山県<span>20</span></a>
+      </div>
+    </div>
+    <div class="pref-group">
+      <h3>中国</h3>
+      <div class="pref-chips">
+        <a class="pref-chip" href="/pref/tottori/">鳥取県<span>14</span></a>
+        <a class="pref-chip" href="/pref/shimane/">島根県<span>10</span></a>
+        <a class="pref-chip" href="/pref/okayama/">岡山県<span>10</span></a>
+        <a class="pref-chip" href="/pref/hiroshima/">広島県<span>9</span></a>
+        <a class="pref-chip" href="/pref/yamaguchi/">山口県<span>6</span></a>
+      </div>
+    </div>
+    <div class="pref-group">
+      <h3>四国</h3>
+      <div class="pref-chips">
+        <a class="pref-chip" href="/pref/tokushima/">徳島県<span>15</span></a>
+        <a class="pref-chip" href="/pref/kagawa/">香川県<span>9</span></a>
+        <a class="pref-chip" href="/pref/ehime/">愛媛県<span>9</span></a>
+        <a class="pref-chip" href="/pref/kochi/">高知県<span>17</span></a>
+      </div>
+    </div>
+    <div class="pref-group">
+      <h3>九州</h3>
+      <div class="pref-chips">
+        <a class="pref-chip" href="/pref/fukuoka/">福岡県<span>29</span></a>
+        <a class="pref-chip" href="/pref/saga/">佐賀県<span>10</span></a>
+        <a class="pref-chip" href="/pref/nagasaki/">長崎県<span>8</span></a>
+        <a class="pref-chip" href="/pref/kumamoto/">熊本県<span>23</span></a>
+        <a class="pref-chip" href="/pref/oita/">大分県<span>3</span></a>
+        <a class="pref-chip" href="/pref/miyazaki/">宮崎県<span>14</span></a>
+        <a class="pref-chip" href="/pref/kagoshima/">鹿児島県<span>20</span></a>
+        <a class="pref-chip" href="/pref/okinawa/">沖縄県<span>11</span></a>
+      </div>
+    </div>
+</section>
+
+<style>
+.pref-nav{margin:28px 0 8px;font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;text-align:center}
+.pref-nav h2{font-size:20px;color:#2c3e50;margin:0 0 4px}
+.pref-lead{color:#666;font-size:13px;margin:0 0 18px}
+.pref-group{margin:14px 0}
+.pref-group h3{font-size:13px;color:#3498db;font-weight:bold;margin:0 0 8px}
+.pref-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.pref-chip{display:inline-flex;align-items:center;gap:5px;text-decoration:none;color:#2c3e50;
+  background:#f0f4f8;border:1px solid #dbe4ec;border-radius:999px;padding:6px 12px;font-size:14px;transition:.15s}
+.pref-chip:hover{background:#eaf4fc;border-color:#3498db;color:#2980b9}
+.pref-chip span{font-size:11px;color:#95a5a6;background:#fff;border-radius:999px;padding:1px 6px}
+</style>
+<!-- ▲▲ 貼り付けここまで ▲▲ -->
+
+    </div>
+
+    <!-- クイズタブ -->
+    <div id="tab-quiz" class="content">
+        <h1>🗾 全国「まち・ちょう」クイズ</h1>
+        <p>この町の正しい読み方はどっち？</p>
+        
+        <div id="streak-box">🔥 現在 <span id="streak-count">0</span> 問連続正解中！</div>
+        
+        <div id="question-box">準備中...</div>
+        <div>
+            <button class="btn-machi" onclick="checkAnswer('まち')">まち</button>
+            <button class="btn-chou" onclick="checkAnswer('ちょう')">ちょう</button>
+        </div>
+        <div id="quiz-result"></div>
+        <button id="next-btn" class="btn-next" onclick="nextQuestion()">次の問題へ ＞</button>
+    </div>
+
+    <!-- 豆知識＆ガイドタブ（新規追加） -->
+    <div id="tab-guide" class="content article-text">
+        <h1 style="text-align: center;">当サイトについて</h1>
+        
+        <h2>サイトの目的</h2>
+        <p>「マチカチョウカ」は、日本全国に743件ある「町」の読み方が「まち」なのか「ちょう」なのかを、一発で検索し、さらにクイズ形式で楽しく学ぶことができる無料のWebサービスです。</p>
+        <p>日常のちょっとした疑問の解決から、地理の勉強、お出かけ前の知識としてぜひご活用ください。</p>
+
+        <h2>遊び方・使い方ガイド</h2>
+        <ul>
+            <li><strong>🔍 検索タブ：</strong><br>気になる町名（例：屋久島、箱根など）を入力すると、正しい読み方とひらがな表記が表示されます。名前の一部を入力するだけでも検索可能です。</li>
+            <li><strong>🎮 クイズタブ：</strong><br>全国の町名データからランダムで1つ出題されます。「まち」か「ちょう」か2択で答えて、連続正解記録に挑戦してみてください！間違えたら即ゲームオーバーのシビアな仕様です。結果は𝕏（旧Twitter）でシェアできます。</li>
+        </ul>
+
+        <h2>【豆知識】「まち」と「ちょう」の境界線</h2>
+        <p>日本全国の「町」ですが、実は法律（地方自治法）で「こう読みなさい」という全国統一の決まりはありません。それぞれの自治体が独自に定めています。</p>
+        
+        <h3>東日本と西日本の傾向の違い</h3>
+        <p>面白いことに、読み方には明確な地域差（西高東低ならぬ、西ちょう東まち）があります。</p>
+        <ul>
+            <li><strong>東日本（関東や東北など）：</strong> 「まち」と読む傾向が非常に強いです。</li>
+            <li><strong>西日本（関西や九州など）：</strong> 「ちょう」と読む傾向が圧倒的に強いです。</li>
+        </ul>
+        <p>ただし、同じ県内でも混在していたり、平成の大合併の際に近隣の町と統一するために読み方が変わったりした町もあるため、一筋縄ではいきません。例えば同じ北海道でも「まち」と「ちょう」が入り乱れています。</p>
+        <p>この法則通りにいかない奥深さが「町名読み方」の最大の魅力です。ぜひクイズを通じて、意外な読み方をする町を見つけてみてください！</p>
+    </div>
+
+    <!-- プライバシーポリシータブ -->
+    <div id="tab-policy" class="content article-text">
+        <h1 style="text-align: center;">プライバシーポリシー</h1>
+        
+        <h3>当サイトに掲載されている広告について</h3>
+        <p>当サイトでは、第三者配信の広告サービス（Google AdSense、楽天アフィリエイト）を利用しています。<br>
+        このような広告配信事業者は、ユーザーの興味に応じた商品やサービスの広告を表示するため、当サイトや他サイトへのアクセスに関する情報である「Cookie」（氏名、住所、メールアドレス、電話番号は含まれません）を使用することがあります。<br>
+        Google AdSenseに関して、このプロセスの詳細や情報が広告配信事業者に使用されないようにする方法については、<a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank">Googleポリシーと規約</a>をご覧ください。</p>
+
+        <h3>当サイトが使用しているアクセス解析について</h3>
+        <p>当サイトでは、Googleによるアクセス解析ツール「Googleアナリティクス」を利用しています。<br>
+        このGoogleアナリティクスはトラフィックデータの収集のためにCookieを使用しています。このトラフィックデータは匿名で収集されており、個人を特定するものではありません。この機能はCookieを無効にすることで収集を拒否することが出来ますので、お使いのブラウザの設定をご確認ください。</p>
+
+        <h3>免責事項</h3>
+        <p>当サイトで提供している読み方データは、総務省のデータ等を基に細心の注意を払って作成しておりますが、その正確性や最新性を完全に保証するものではありません（自治体の合併等により変更される場合があります）。<br>
+        当サイトの利用によって生じた、いかなるトラブルや損害についても、運営者は一切の責任を負いかねますので、あらかじめご了承ください。</p>
+
+        <h3>お問い合わせ</h3>
+        <p>当サイトに関するお問い合わせ、データの誤りのご指摘等につきましては、運営者の<a href="https://twitter.com/machi_or_cho" target="_blank">𝕏（旧Twitter）アカウント</a>のダイレクトメッセージよりお願いいたします。</p>
+    </div>
+</div>
+
+<script>
+    const townData = [
+  { name: "当別町", reading: "ﾄｳﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "松前町", reading: "ﾏﾂﾏｴﾁｮｳ", type: "ちょう" },
+  { name: "福島町", reading: "ﾌｸｼﾏﾁｮｳ", type: "ちょう" },
+  { name: "知内町", reading: "ｼﾘｳﾁﾁｮｳ", type: "ちょう" },
+  { name: "木古内町", reading: "ｷｺﾅｲﾁｮｳ", type: "ちょう" },
+  { name: "七飯町", reading: "ﾅﾅｴﾁｮｳ", type: "ちょう" },
+  { name: "鹿部町", reading: "ｼｶﾍﾞﾁｮｳ", type: "ちょう" },
+  { name: "森町", reading: "ﾓﾘﾏﾁ", type: "ちょう" },
+  { name: "八雲町", reading: "ﾔｸﾓﾁｮｳ", type: "ちょう" },
+  { name: "長万部町", reading: "ｵｼｬﾏﾝﾍﾞﾁｮｳ", type: "ちょう" },
+  { name: "江差町", reading: "ｴｻｼﾁｮｳ", type: "ちょう" },
+  { name: "上ノ国町", reading: "ｶﾐﾉｸﾆﾁｮｳ", type: "ちょう" },
+  { name: "厚沢部町", reading: "ｱｯｻﾌﾞﾁｮｳ", type: "ちょう" },
+  { name: "乙部町", reading: "ｵﾄﾍﾞﾁｮｳ", type: "ちょう" },
+  { name: "奥尻町", reading: "ｵｸｼﾘﾁｮｳ", type: "ちょう" },
+  { name: "今金町", reading: "ｲﾏｶﾈﾁｮｳ", type: "ちょう" },
+  { name: "せたな町", reading: "ｾﾀﾅﾁｮｳ", type: "ちょう" },
+  { name: "寿都町", reading: "ｽｯﾂﾁｮｳ", type: "ちょう" },
+  { name: "黒松内町", reading: "ｸﾛﾏﾂﾅｲﾁｮｳ", type: "ちょう" },
+  { name: "蘭越町", reading: "ﾗﾝｺｼﾁｮｳ", type: "ちょう" },
+  { name: "ニセコ町", reading: "ﾆｾｺﾁｮｳ", type: "ちょう" },
+  { name: "喜茂別町", reading: "ｷﾓﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "京極町", reading: "ｷｮｳｺﾞｸﾁｮｳ", type: "ちょう" },
+  { name: "倶知安町", reading: "ｸｯﾁｬﾝﾁｮｳ", type: "ちょう" },
+  { name: "共和町", reading: "ｷｮｳﾜﾁｮｳ", type: "ちょう" },
+  { name: "岩内町", reading: "ｲﾜﾅｲﾁｮｳ", type: "ちょう" },
+  { name: "積丹町", reading: "ｼｬｺﾀﾝﾁｮｳ", type: "ちょう" },
+  { name: "古平町", reading: "ﾌﾙﾋﾞﾗﾁｮｳ", type: "ちょう" },
+  { name: "仁木町", reading: "ﾆｷﾁｮｳ", type: "ちょう" },
+  { name: "余市町", reading: "ﾖｲﾁﾁｮｳ", type: "ちょう" },
+  { name: "南幌町", reading: "ﾅﾝﾎﾟﾛﾁｮｳ", type: "ちょう" },
+  { name: "奈井江町", reading: "ﾅｲｴﾁｮｳ", type: "ちょう" },
+  { name: "上砂川町", reading: "ｶﾐｽﾅｶﾞﾜﾁｮｳ", type: "ちょう" },
+  { name: "由仁町", reading: "ﾕﾆﾁｮｳ", type: "ちょう" },
+  { name: "長沼町", reading: "ﾅｶﾞﾇﾏﾁｮｳ", type: "ちょう" },
+  { name: "栗山町", reading: "ｸﾘﾔﾏﾁｮｳ", type: "ちょう" },
+  { name: "月形町", reading: "ﾂｷｶﾞﾀﾁｮｳ", type: "ちょう" },
+  { name: "浦臼町", reading: "ｳﾗｳｽﾁｮｳ", type: "ちょう" },
+  { name: "新十津川町", reading: "ｼﾝﾄﾂｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "妹背牛町", reading: "ﾓｾｳｼﾁｮｳ", type: "ちょう" },
+  { name: "秩父別町", reading: "ﾁｯﾌﾟﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "雨竜町", reading: "ｳﾘｭｳﾁｮｳ", type: "ちょう" },
+  { name: "北竜町", reading: "ﾎｸﾘｭｳﾁｮｳ", type: "ちょう" },
+  { name: "沼田町", reading: "ﾇﾏﾀﾁｮｳ", type: "ちょう" },
+  { name: "鷹栖町", reading: "ﾀｶｽﾁｮｳ", type: "ちょう" },
+  { name: "東神楽町", reading: "ﾋｶﾞｼｶｸﾞﾗﾁｮｳ", type: "ちょう" },
+  { name: "当麻町", reading: "ﾄｳﾏﾁｮｳ", type: "ちょう" },
+  { name: "比布町", reading: "ﾋﾟｯﾌﾟﾁｮｳ", type: "ちょう" },
+  { name: "愛別町", reading: "ｱｲﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "上川町", reading: "ｶﾐｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "東川町", reading: "ﾋｶﾞｼｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "美瑛町", reading: "ﾋﾞｴｲﾁｮｳ", type: "ちょう" },
+  { name: "上富良野町", reading: "ｶﾐﾌﾗﾉﾁｮｳ", type: "ちょう" },
+  { name: "中富良野町", reading: "ﾅｶﾌﾗﾉﾁｮｳ", type: "ちょう" },
+  { name: "南富良野町", reading: "ﾐﾅﾐﾌﾗﾉﾁｮｳ", type: "ちょう" },
+  { name: "和寒町", reading: "ﾜｯｻﾑﾁｮｳ", type: "ちょう" },
+  { name: "剣淵町", reading: "ｹﾝﾌﾞﾁﾁｮｳ", type: "ちょう" },
+  { name: "下川町", reading: "ｼﾓｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "美深町", reading: "ﾋﾞﾌｶﾁｮｳ", type: "ちょう" },
+  { name: "中川町", reading: "ﾅｶｶﾞﾜﾁｮｳ", type: "ちょう" },
+  { name: "幌加内町", reading: "ﾎﾛｶﾅｲﾁｮｳ", type: "ちょう" },
+  { name: "増毛町", reading: "ﾏｼｹﾁｮｳ", type: "ちょう" },
+  { name: "小平町", reading: "ｵﾋﾞﾗﾁｮｳ", type: "ちょう" },
+  { name: "苫前町", reading: "ﾄﾏﾏｴﾁｮｳ", type: "ちょう" },
+  { name: "羽幌町", reading: "ﾊﾎﾞﾛﾁｮｳ", type: "ちょう" },
+  { name: "遠別町", reading: "ｴﾝﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "天塩町", reading: "ﾃｼｵﾁｮｳ", type: "ちょう" },
+  { name: "浜頓別町", reading: "ﾊﾏﾄﾝﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "中頓別町", reading: "ﾅｶﾄﾝﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "枝幸町", reading: "ｴｻｼﾁｮｳ", type: "ちょう" },
+  { name: "豊富町", reading: "ﾄﾖﾄﾐﾁｮｳ", type: "ちょう" },
+  { name: "礼文町", reading: "ﾚﾌﾞﾝﾁｮｳ", type: "ちょう" },
+  { name: "利尻町", reading: "ﾘｼﾘﾁｮｳ", type: "ちょう" },
+  { name: "利尻富士町", reading: "ﾘｼﾘﾌｼﾞﾁｮｳ", type: "ちょう" },
+  { name: "幌延町", reading: "ﾎﾛﾉﾍﾞﾁｮｳ", type: "ちょう" },
+  { name: "美幌町", reading: "ﾋﾞﾎﾛﾁｮｳ", type: "ちょう" },
+  { name: "津別町", reading: "ﾂﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "斜里町", reading: "ｼｬﾘﾁｮｳ", type: "ちょう" },
+  { name: "清里町", reading: "ｷﾖｻﾄﾁｮｳ", type: "ちょう" },
+  { name: "小清水町", reading: "ｺｼﾐｽﾞﾁｮｳ", type: "ちょう" },
+  { name: "訓子府町", reading: "ｸﾝﾈｯﾌﾟﾁｮｳ", type: "ちょう" },
+  { name: "置戸町", reading: "ｵｹﾄﾁｮｳ", type: "ちょう" },
+  { name: "佐呂間町", reading: "ｻﾛﾏﾁｮｳ", type: "ちょう" },
+  { name: "遠軽町", reading: "ｴﾝｶﾞﾙﾁｮｳ", type: "ちょう" },
+  { name: "湧別町", reading: "ﾕｳﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "滝上町", reading: "ﾀｷﾉｳｴﾁｮｳ", type: "ちょう" },
+  { name: "興部町", reading: "ｵｺｯﾍﾟﾁｮｳ", type: "ちょう" },
+  { name: "雄武町", reading: "ｵｳﾑﾁｮｳ", type: "ちょう" },
+  { name: "大空町", reading: "ｵｵｿﾞﾗﾁｮｳ", type: "ちょう" },
+  { name: "豊浦町", reading: "ﾄﾖｳﾗﾁｮｳ", type: "ちょう" },
+  { name: "壮瞥町", reading: "ｿｳﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "白老町", reading: "ｼﾗｵｲﾁｮｳ", type: "ちょう" },
+  { name: "厚真町", reading: "ｱﾂﾏﾁｮｳ", type: "ちょう" },
+  { name: "洞爺湖町", reading: "ﾄｳﾔｺﾁｮｳ", type: "ちょう" },
+  { name: "安平町", reading: "ｱﾋﾞﾗﾁｮｳ", type: "ちょう" },
+  { name: "むかわ町", reading: "ﾑｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "日高町", reading: "ﾋﾀﾞｶﾁｮｳ", type: "ちょう" },
+  { name: "平取町", reading: "ﾋﾞﾗﾄﾘﾁｮｳ", type: "ちょう" },
+  { name: "新冠町", reading: "ﾆｲｶｯﾌﾟﾁｮｳ", type: "ちょう" },
+  { name: "浦河町", reading: "ｳﾗｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "様似町", reading: "ｻﾏﾆﾁｮｳ", type: "ちょう" },
+  { name: "えりも町", reading: "ｴﾘﾓﾁｮｳ", type: "ちょう" },
+  { name: "新ひだか町", reading: "ｼﾝﾋﾀﾞｶﾁｮｳ", type: "ちょう" },
+  { name: "音更町", reading: "ｵﾄﾌｹﾁｮｳ", type: "ちょう" },
+  { name: "士幌町", reading: "ｼﾎﾛﾁｮｳ", type: "ちょう" },
+  { name: "上士幌町", reading: "ｶﾐｼﾎﾛﾁｮｳ", type: "ちょう" },
+  { name: "鹿追町", reading: "ｼｶｵｲﾁｮｳ", type: "ちょう" },
+  { name: "新得町", reading: "ｼﾝﾄｸﾁｮｳ", type: "ちょう" },
+  { name: "清水町", reading: "ｼﾐｽﾞﾁｮｳ", type: "ちょう" },
+  { name: "芽室町", reading: "ﾒﾑﾛﾁｮｳ", type: "ちょう" },
+  { name: "大樹町", reading: "ﾀｲｷﾁｮｳ", type: "ちょう" },
+  { name: "広尾町", reading: "ﾋﾛｵﾁｮｳ", type: "ちょう" },
+  { name: "幕別町", reading: "ﾏｸﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "池田町", reading: "ｲｹﾀﾞﾁｮｳ", type: "ちょう" },
+  { name: "豊頃町", reading: "ﾄﾖｺﾛﾁｮｳ", type: "ちょう" },
+  { name: "本別町", reading: "ﾎﾝﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "足寄町", reading: "ｱｼｮﾛﾁｮｳ", type: "ちょう" },
+  { name: "陸別町", reading: "ﾘｸﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "浦幌町", reading: "ｳﾗﾎﾛﾁｮｳ", type: "ちょう" },
+  { name: "釧路町", reading: "ｸｼﾛﾁｮｳ", type: "ちょう" },
+  { name: "厚岸町", reading: "ｱｯｹｼﾁｮｳ", type: "ちょう" },
+  { name: "浜中町", reading: "ﾊﾏﾅｶﾁｮｳ", type: "ちょう" },
+  { name: "標茶町", reading: "ｼﾍﾞﾁｬﾁｮｳ", type: "ちょう" },
+  { name: "弟子屈町", reading: "ﾃｼｶｶﾞﾁｮｳ", type: "ちょう" },
+  { name: "白糠町", reading: "ｼﾗﾇｶﾁｮｳ", type: "ちょう" },
+  { name: "別海町", reading: "ﾍﾞﾂｶｲﾁｮｳ", type: "ちょう" },
+  { name: "中標津町", reading: "ﾅｶｼﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "標津町", reading: "ｼﾍﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "羅臼町", reading: "ﾗｳｽﾁｮｳ", type: "ちょう" },
+  { name: "平内町", reading: "ﾋﾗﾅｲﾏﾁ", type: "ちょう" },
+  { name: "今別町", reading: "ｲﾏﾍﾞﾂﾏﾁ", type: "ちょう" },
+  { name: "外ヶ浜町", reading: "ｿﾄｶﾞﾊﾏﾏﾁ", type: "ちょう" },
+  { name: "鰺ヶ沢町", reading: "ｱｼﾞｶﾞｻﾜﾏﾁ", type: "ちょう" },
+  { name: "深浦町", reading: "ﾌｶｳﾗﾏﾁ", type: "ちょう" },
+  { name: "藤崎町", reading: "ﾌｼﾞｻｷﾏﾁ", type: "ちょう" },
+  { name: "大鰐町", reading: "ｵｵﾜﾆﾏﾁ", type: "ちょう" },
+  { name: "板柳町", reading: "ｲﾀﾔﾅｷﾞﾏﾁ", type: "ちょう" },
+  { name: "鶴田町", reading: "ﾂﾙﾀﾏﾁ", type: "ちょう" },
+  { name: "中泊町", reading: "ﾅｶﾄﾞﾏﾘﾏﾁ", type: "ちょう" },
+  { name: "野辺地町", reading: "ﾉﾍｼﾞﾏﾁ", type: "ちょう" },
+  { name: "七戸町", reading: "ｼﾁﾉﾍﾏﾁ", type: "ちょう" },
+  { name: "六戸町", reading: "ﾛｸﾉﾍﾏﾁ", type: "ちょう" },
+  { name: "横浜町", reading: "ﾖｺﾊﾏﾏﾁ", type: "ちょう" },
+  { name: "東北町", reading: "ﾄｳﾎｸﾏﾁ", type: "ちょう" },
+  { name: "おいらせ町", reading: "ｵｲﾗｾﾁｮｳ", type: "ちょう" },
+  { name: "大間町", reading: "ｵｵﾏﾏﾁ", type: "ちょう" },
+  { name: "三戸町", reading: "ｻﾝﾉﾍﾏﾁ", type: "ちょう" },
+  { name: "五戸町", reading: "ｺﾞﾉﾍﾏﾁ", type: "ちょう" },
+  { name: "田子町", reading: "ﾀｯｺﾏﾁ", type: "ちょう" },
+  { name: "南部町", reading: "ﾅﾝﾌﾞﾁｮｳ", type: "ちょう" },
+  { name: "階上町", reading: "ﾊｼｶﾐﾁｮｳ", type: "ちょう" },
+  { name: "雫石町", reading: "ｼｽﾞｸｲｼﾁｮｳ", type: "ちょう" },
+  { name: "葛巻町", reading: "ｸｽﾞﾏｷﾏﾁ", type: "ちょう" },
+  { name: "岩手町", reading: "ｲﾜﾃﾏﾁ", type: "ちょう" },
+  { name: "紫波町", reading: "ｼﾜﾁｮｳ", type: "ちょう" },
+  { name: "矢巾町", reading: "ﾔﾊﾊﾞﾁｮｳ", type: "ちょう" },
+  { name: "西和賀町", reading: "ﾆｼﾜｶﾞﾏﾁ", type: "ちょう" },
+  { name: "金ケ崎町", reading: "ｶﾈｶﾞｻｷﾁｮｳ", type: "ちょう" },
+  { name: "平泉町", reading: "ﾋﾗｲｽﾞﾐﾁｮｳ", type: "ちょう" },
+  { name: "住田町", reading: "ｽﾐﾀﾁｮｳ", type: "ちょう" },
+  { name: "大槌町", reading: "ｵｵﾂﾁﾁｮｳ", type: "ちょう" },
+  { name: "山田町", reading: "ﾔﾏﾀﾞﾏﾁ", type: "ちょう" },
+  { name: "岩泉町", reading: "ｲﾜｲｽﾞﾐﾁｮｳ", type: "ちょう" },
+  { name: "軽米町", reading: "ｶﾙﾏｲﾏﾁ", type: "ちょう" },
+  { name: "洋野町", reading: "ﾋﾛﾉﾁｮｳ", type: "ちょう" },
+  { name: "一戸町", reading: "ｲﾁﾉﾍﾏﾁ", type: "ちょう" },
+  { name: "蔵王町", reading: "ｻﾞｵｳﾏﾁ", type: "ちょう" },
+  { name: "七ヶ宿町", reading: "ｼﾁｶｼｭｸﾏﾁ", type: "ちょう" },
+  { name: "大河原町", reading: "ｵｵｶﾞﾜﾗﾏﾁ", type: "ちょう" },
+  { name: "村田町", reading: "ﾑﾗﾀﾏﾁ", type: "ちょう" },
+  { name: "柴田町", reading: "ｼﾊﾞﾀﾏﾁ", type: "ちょう" },
+  { name: "川崎町", reading: "ｶﾜｻｷﾏﾁ", type: "ちょう" },
+  { name: "丸森町", reading: "ﾏﾙﾓﾘﾏﾁ", type: "ちょう" },
+  { name: "亘理町", reading: "ﾜﾀﾘﾁｮｳ", type: "ちょう" },
+  { name: "山元町", reading: "ﾔﾏﾓﾄﾁｮｳ", type: "ちょう" },
+  { name: "松島町", reading: "ﾏﾂｼﾏﾏﾁ", type: "ちょう" },
+  { name: "七ヶ浜町", reading: "ｼﾁｶﾞﾊﾏﾏﾁ", type: "ちょう" },
+  { name: "利府町", reading: "ﾘﾌﾁｮｳ", type: "ちょう" },
+  { name: "大和町", reading: "ﾀｲﾜﾁｮｳ", type: "ちょう" },
+  { name: "大郷町", reading: "ｵｵｻﾄﾁｮｳ", type: "ちょう" },
+  { name: "色麻町", reading: "ｼｶﾏﾁｮｳ", type: "ちょう" },
+  { name: "加美町", reading: "ｶﾐﾏﾁ", type: "ちょう" },
+  { name: "涌谷町", reading: "ﾜｸﾔﾁｮｳ", type: "ちょう" },
+  { name: "美里町", reading: "ﾐｻﾄﾏﾁ", type: "ちょう" },
+  { name: "女川町", reading: "ｵﾅｶﾞﾜﾁｮｳ", type: "ちょう" },
+  { name: "南三陸町", reading: "ﾐﾅﾐｻﾝﾘｸﾁｮｳ", type: "ちょう" },
+  { name: "小坂町", reading: "ｺｻｶﾏﾁ", type: "ちょう" },
+  { name: "藤里町", reading: "ﾌｼﾞｻﾄﾏﾁ", type: "ちょう" },
+  { name: "三種町", reading: "ﾐﾀﾈﾁｮｳ", type: "ちょう" },
+  { name: "八峰町", reading: "ﾊｯﾎﾟｳﾁｮｳ", type: "ちょう" },
+  { name: "五城目町", reading: "ｺﾞｼﾞｮｳﾒﾏﾁ", type: "ちょう" },
+  { name: "八郎潟町", reading: "ﾊﾁﾛｳｶﾞﾀﾏﾁ", type: "ちょう" },
+  { name: "井川町", reading: "ｲｶﾜﾏﾁ", type: "ちょう" },
+  { name: "美郷町", reading: "ﾐｻﾄﾁｮｳ", type: "ちょう" },
+  { name: "羽後町", reading: "ｳｺﾞﾏﾁ", type: "ちょう" },
+  { name: "山辺町", reading: "ﾔﾏﾉﾍﾞﾏﾁ", type: "ちょう" },
+  { name: "中山町", reading: "ﾅｶﾔﾏﾏﾁ", type: "ちょう" },
+  { name: "河北町", reading: "ｶﾎｸﾁｮｳ", type: "ちょう" },
+  { name: "西川町", reading: "ﾆｼｶﾜﾏﾁ", type: "ちょう" },
+  { name: "朝日町", reading: "ｱｻﾋﾏﾁ", type: "ちょう" },
+  { name: "大江町", reading: "ｵｵｴﾏﾁ", type: "ちょう" },
+  { name: "大石田町", reading: "ｵｵｲｼﾀﾞﾏﾁ", type: "ちょう" },
+  { name: "金山町", reading: "ｶﾈﾔﾏﾏﾁ", type: "ちょう" },
+  { name: "最上町", reading: "ﾓｶﾞﾐﾏﾁ", type: "ちょう" },
+  { name: "舟形町", reading: "ﾌﾅｶﾞﾀﾏﾁ", type: "ちょう" },
+  { name: "真室川町", reading: "ﾏﾑﾛｶﾞﾜﾏﾁ", type: "ちょう" },
+  { name: "高畠町", reading: "ﾀｶﾊﾀﾏﾁ", type: "ちょう" },
+  { name: "川西町", reading: "ｶﾜﾆｼﾏﾁ", type: "ちょう" },
+  { name: "小国町", reading: "ｵｸﾞﾆﾏﾁ", type: "ちょう" },
+  { name: "白鷹町", reading: "ｼﾗﾀｶﾏﾁ", type: "ちょう" },
+  { name: "飯豊町", reading: "ｲｲﾃﾞﾏﾁ", type: "ちょう" },
+  { name: "三川町", reading: "ﾐｶﾜﾏﾁ", type: "ちょう" },
+  { name: "庄内町", reading: "ｼﾖｳﾅｲﾏﾁ", type: "ちょう" },
+  { name: "遊佐町", reading: "ﾕｻﾞﾏﾁ", type: "ちょう" },
+  { name: "桑折町", reading: "ｺｵﾘﾏﾁ", type: "ちょう" },
+  { name: "国見町", reading: "ｸﾆﾐﾏﾁ", type: "ちょう" },
+  { name: "川俣町", reading: "ｶﾜﾏﾀﾏﾁ", type: "ちょう" },
+  { name: "鏡石町", reading: "ｶｶﾞﾐｲｼﾏﾁ", type: "ちょう" },
+  { name: "下郷町", reading: "ｼﾓｺﾞｳﾏﾁ", type: "ちょう" },
+  { name: "只見町", reading: "ﾀﾀﾞﾐﾏﾁ", type: "ちょう" },
+  { name: "南会津町", reading: "ﾐﾅﾐｱｲﾂﾞﾏﾁ", type: "ちょう" },
+  { name: "西会津町", reading: "ﾆｼｱｲﾂﾞﾏﾁ", type: "ちょう" },
+  { name: "磐梯町", reading: "ﾊﾞﾝﾀﾞｲﾏﾁ", type: "ちょう" },
+  { name: "猪苗代町", reading: "ｲﾅﾜｼﾛﾏﾁ", type: "ちょう" },
+  { name: "会津坂下町", reading: "ｱｲﾂﾞﾊﾞﾝｹﾞﾏﾁ", type: "ちょう" },
+  { name: "柳津町", reading: "ﾔﾅｲﾂﾞﾏﾁ", type: "ちょう" },
+  { name: "三島町", reading: "ﾐｼﾏﾏﾁ", type: "ちょう" },
+  { name: "金山町", reading: "ｶﾈﾔﾏﾏﾁ", type: "ちょう" },
+  { name: "会津美里町", reading: "ｱｲﾂﾞﾐｻﾄﾏﾁ", type: "ちょう" },
+  { name: "矢吹町", reading: "ﾔﾌﾞｷﾏﾁ", type: "ちょう" },
+  { name: "棚倉町", reading: "ﾀﾅｸﾞﾗﾏﾁ", type: "ちょう" },
+  { name: "矢祭町", reading: "ﾔﾏﾂﾘﾏﾁ", type: "ちょう" },
+  { name: "塙町", reading: "ﾊﾅﾜﾏﾁ", type: "ちょう" },
+  { name: "石川町", reading: "ｲｼｶﾜﾏﾁ", type: "ちょう" },
+  { name: "浅川町", reading: "ｱｻｶﾜﾏﾁ", type: "ちょう" },
+  { name: "古殿町", reading: "ﾌﾙﾄﾞﾉﾏﾁ", type: "ちょう" },
+  { name: "三春町", reading: "ﾐﾊﾙﾏﾁ", type: "ちょう" },
+  { name: "小野町", reading: "ｵﾉﾏﾁ", type: "ちょう" },
+  { name: "広野町", reading: "ﾋﾛﾉﾏﾁ", type: "ちょう" },
+  { name: "楢葉町", reading: "ﾅﾗﾊﾏﾁ", type: "ちょう" },
+  { name: "富岡町", reading: "ﾄﾐｵｶﾏﾁ", type: "ちょう" },
+  { name: "大熊町", reading: "ｵｵｸﾏﾏﾁ", type: "ちょう" },
+  { name: "双葉町", reading: "ﾌﾀﾊﾞﾏﾁ", type: "ちょう" },
+  { name: "浪江町", reading: "ﾅﾐｴﾏﾁ", type: "ちょう" },
+  { name: "新地町", reading: "ｼﾝﾁﾏﾁ", type: "ちょう" },
+  { name: "茨城町", reading: "ｲﾊﾞﾗｷﾏﾁ", type: "ちょう" },
+  { name: "大洗町", reading: "ｵｵｱﾗｲﾏﾁ", type: "ちょう" },
+  { name: "城里町", reading: "ｼﾛｻﾄﾏﾁ", type: "ちょう" },
+  { name: "大子町", reading: "ﾀﾞｲｺﾞﾏﾁ", type: "ちょう" },
+  { name: "阿見町", reading: "ｱﾐﾏﾁ", type: "ちょう" },
+  { name: "河内町", reading: "ｶﾜﾁﾏﾁ", type: "ちょう" },
+  { name: "八千代町", reading: "ﾔﾁﾖﾏﾁ", type: "ちょう" },
+  { name: "五霞町", reading: "ｺﾞｶﾏﾁ", type: "ちょう" },
+  { name: "境町", reading: "ｻｶｲﾏﾁ", type: "ちょう" },
+  { name: "利根町", reading: "ﾄﾈﾏﾁ", type: "ちょう" },
+  { name: "上三川町", reading: "ｶﾐﾉｶﾜﾏﾁ", type: "ちょう" },
+  { name: "益子町", reading: "ﾏｼｺﾏﾁ", type: "ちょう" },
+  { name: "茂木町", reading: "ﾓﾃｷﾞﾏﾁ", type: "ちょう" },
+  { name: "市貝町", reading: "ｲﾁｶｲﾏﾁ", type: "ちょう" },
+  { name: "芳賀町", reading: "ﾊｶﾞﾏﾁ", type: "ちょう" },
+  { name: "壬生町", reading: "ﾐﾌﾞﾏﾁ", type: "ちょう" },
+  { name: "野木町", reading: "ﾉｷﾞﾏﾁ", type: "ちょう" },
+  { name: "塩谷町", reading: "ｼｵﾔﾏﾁ", type: "ちょう" },
+  { name: "高根沢町", reading: "ﾀｶﾈｻﾞﾜﾏﾁ", type: "ちょう" },
+  { name: "那須町", reading: "ﾅｽﾏﾁ", type: "ちょう" },
+  { name: "那珂川町", reading: "ﾅｶｶﾞﾜﾏﾁ", type: "ちょう" },
+  { name: "吉岡町", reading: "ﾖｼｵｶﾏﾁ", type: "ちょう" },
+  { name: "神流町", reading: "ｶﾝﾅﾏﾁ", type: "ちょう" },
+  { name: "下仁田町", reading: "ｼﾓﾆﾀﾏﾁ", type: "ちょう" },
+  { name: "甘楽町", reading: "ｶﾝﾗﾏﾁ", type: "ちょう" },
+  { name: "中之条町", reading: "ﾅｶﾉｼﾞﾖｳﾏﾁ", type: "ちょう" },
+  { name: "長野原町", reading: "ﾅｶﾞﾉﾊﾗﾏﾁ", type: "ちょう" },
+  { name: "草津町", reading: "ｸｻﾂﾏﾁ", type: "ちょう" },
+  { name: "東吾妻町", reading: "ﾋｶﾞｼｱｶﾞﾂﾏﾏﾁ", type: "ちょう" },
+  { name: "みなかみ町", reading: "ﾐﾅｶﾐﾏﾁ", type: "ちょう" },
+  { name: "玉村町", reading: "ﾀﾏﾑﾗﾏﾁ", type: "ちょう" },
+  { name: "板倉町", reading: "ｲﾀｸﾗﾏﾁ", type: "ちょう" },
+  { name: "明和町", reading: "ﾒｲﾜﾏﾁ", type: "ちょう" },
+  { name: "千代田町", reading: "ﾁﾖﾀﾞﾏﾁ", type: "ちょう" },
+  { name: "大泉町", reading: "ｵｵｲｽﾞﾐﾏﾁ", type: "ちょう" },
+  { name: "邑楽町", reading: "ｵｳﾗﾏﾁ", type: "ちょう" },
+  { name: "伊奈町", reading: "ｲﾅﾏﾁ", type: "ちょう" },
+  { name: "三芳町", reading: "ﾐﾖｼﾏﾁ", type: "ちょう" },
+  { name: "毛呂山町", reading: "ﾓﾛﾔﾏﾏﾁ", type: "ちょう" },
+  { name: "越生町", reading: "ｵｺﾞｾﾏﾁ", type: "ちょう" },
+  { name: "滑川町", reading: "ﾅﾒｶﾞﾜﾏﾁ", type: "ちょう" },
+  { name: "嵐山町", reading: "ﾗﾝｻﾞﾝﾏﾁ", type: "ちょう" },
+  { name: "小川町", reading: "ｵｶﾞﾜﾏﾁ", type: "ちょう" },
+  { name: "川島町", reading: "ｶﾜｼﾞﾏﾏﾁ", type: "ちょう" },
+  { name: "吉見町", reading: "ﾖｼﾐﾏﾁ", type: "ちょう" },
+  { name: "鳩山町", reading: "ﾊﾄﾔﾏﾏﾁ", type: "ちょう" },
+  { name: "ときがわ町", reading: "ﾄｷｶﾞﾜﾏﾁ", type: "ちょう" },
+  { name: "横瀬町", reading: "ﾖｺｾﾞﾏﾁ", type: "ちょう" },
+  { name: "皆野町", reading: "ﾐﾅﾉﾏﾁ", type: "ちょう" },
+  { name: "長瀞町", reading: "ﾅｶﾞﾄﾛﾏﾁ", type: "ちょう" },
+  { name: "小鹿野町", reading: "ｵｶﾞﾉﾏﾁ", type: "ちょう" },
+  { name: "美里町", reading: "ﾐｻﾄﾏﾁ", type: "ちょう" },
+  { name: "神川町", reading: "ｶﾐｶﾜﾏﾁ", type: "ちょう" },
+  { name: "上里町", reading: "ｶﾐｻﾄﾏﾁ", type: "ちょう" },
+  { name: "寄居町", reading: "ﾖﾘｲﾏﾁ", type: "ちょう" },
+  { name: "宮代町", reading: "ﾐﾔｼﾛﾏﾁ", type: "ちょう" },
+  { name: "杉戸町", reading: "ｽｷﾞﾄﾏﾁ", type: "ちょう" },
+  { name: "松伏町", reading: "ﾏﾂﾌﾞｼﾏﾁ", type: "ちょう" },
+  { name: "酒々井町", reading: "ｼｽｲﾏﾁ", type: "ちょう" },
+  { name: "栄町", reading: "ｻｶｴﾏﾁ", type: "ちょう" },
+  { name: "神崎町", reading: "ｺｳｻﾞｷﾏﾁ", type: "ちょう" },
+  { name: "多古町", reading: "ﾀｺﾏﾁ", type: "ちょう" },
+  { name: "東庄町", reading: "ﾄｳﾉｼｮｳﾏﾁ", type: "ちょう" },
+  { name: "九十九里町", reading: "ｸｼﾞﾕｳｸﾘﾏﾁ", type: "ちょう" },
+  { name: "芝山町", reading: "ｼﾊﾞﾔﾏﾏﾁ", type: "ちょう" },
+  { name: "横芝光町", reading: "ﾖｺｼﾊﾞﾋｶﾘﾏﾁ", type: "ちょう" },
+  { name: "一宮町", reading: "ｲﾁﾉﾐﾔﾏﾁ", type: "ちょう" },
+  { name: "睦沢町", reading: "ﾑﾂｻﾞﾜﾏﾁ", type: "ちょう" },
+  { name: "白子町", reading: "ｼﾗｺﾏﾁ", type: "ちょう" },
+  { name: "長柄町", reading: "ﾅｶﾞﾗﾏﾁ", type: "ちょう" },
+  { name: "長南町", reading: "ﾁｮｳﾅﾝﾏﾁ", type: "ちょう" },
+  { name: "大多喜町", reading: "ｵｵﾀｷﾏﾁ", type: "ちょう" },
+  { name: "御宿町", reading: "ｵﾝｼﾞﾕｸﾏﾁ", type: "ちょう" },
+  { name: "鋸南町", reading: "ｷﾖﾅﾝﾏﾁ", type: "ちょう" },
+  { name: "瑞穂町", reading: "ﾐｽﾞﾎﾏﾁ", type: "ちょう" },
+  { name: "日の出町", reading: "ﾋﾉﾃﾞﾏﾁ", type: "ちょう" },
+  { name: "奥多摩町", reading: "ｵｸﾀﾏﾏﾁ", type: "ちょう" },
+  { name: "大島町", reading: "ｵｵｼﾏﾏﾁ", type: "ちょう" },
+  { name: "八丈町", reading: "ﾊﾁｼﾞｮｳﾏﾁ", type: "ちょう" },
+  { name: "葉山町", reading: "ﾊﾔﾏﾏﾁ", type: "ちょう" },
+  { name: "寒川町", reading: "ｻﾑｶﾜﾏﾁ", type: "ちょう" },
+  { name: "大磯町", reading: "ｵｵｲｿﾏﾁ", type: "ちょう" },
+  { name: "二宮町", reading: "ﾆﾉﾐﾔﾏﾁ", type: "ちょう" },
+  { name: "中井町", reading: "ﾅｶｲﾏﾁ", type: "ちょう" },
+  { name: "大井町", reading: "ｵｵｲﾏﾁ", type: "ちょう" },
+  { name: "松田町", reading: "ﾏﾂﾀﾞﾏﾁ", type: "ちょう" },
+  { name: "山北町", reading: "ﾔﾏｷﾀﾏﾁ", type: "ちょう" },
+  { name: "開成町", reading: "ｶｲｾｲﾏﾁ", type: "ちょう" },
+  { name: "箱根町", reading: "ﾊｺﾈﾏﾁ", type: "ちょう" },
+  { name: "真鶴町", reading: "ﾏﾅﾂﾞﾙﾏﾁ", type: "ちょう" },
+  { name: "湯河原町", reading: "ﾕｶﾞﾜﾗﾏﾁ", type: "ちょう" },
+  { name: "愛川町", reading: "ｱｲｶﾜﾏﾁ", type: "ちょう" },
+  { name: "聖籠町", reading: "ｾｲﾛｳﾏﾁ", type: "ちょう" },
+  { name: "田上町", reading: "ﾀｶﾞﾐﾏﾁ", type: "ちょう" },
+  { name: "阿賀町", reading: "ｱｶﾞﾏﾁ", type: "ちょう" },
+  { name: "出雲崎町", reading: "ｲｽﾞﾓｻﾞｷﾏﾁ", type: "ちょう" },
+  { name: "湯沢町", reading: "ﾕｻﾞﾜﾏﾁ", type: "ちょう" },
+  { name: "津南町", reading: "ﾂﾅﾝﾏﾁ", type: "ちょう" },
+  { name: "上市町", reading: "ｶﾐｲﾁﾏﾁ", type: "ちょう" },
+  { name: "立山町", reading: "ﾀﾃﾔﾏﾏﾁ", type: "ちょう" },
+  { name: "入善町", reading: "ﾆｭｳｾﾞﾝﾏﾁ", type: "ちょう" },
+  { name: "朝日町", reading: "ｱｻﾋﾏﾁ", type: "ちょう" },
+  { name: "川北町", reading: "ｶﾜｷﾀﾏﾁ", type: "ちょう" },
+  { name: "津幡町", reading: "ﾂﾊﾞﾀﾏﾁ", type: "ちょう" },
+  { name: "内灘町", reading: "ｳﾁﾅﾀﾞﾏﾁ", type: "ちょう" },
+  { name: "志賀町", reading: "ｼｶﾏﾁ", type: "ちょう" },
+  { name: "宝達志水町", reading: "ﾎｳﾀﾞﾂｼﾐｽﾞﾁｮｳ", type: "ちょう" },
+  { name: "中能登町", reading: "ﾅｶﾉﾄﾏﾁ", type: "ちょう" },
+  { name: "穴水町", reading: "ｱﾅﾐｽﾞﾏﾁ", type: "ちょう" },
+  { name: "能登町", reading: "ﾉﾄﾁｮｳ", type: "ちょう" },
+  { name: "永平寺町", reading: "ｴｲﾍｲｼﾞﾁｮｳ", type: "ちょう" },
+  { name: "池田町", reading: "ｲｹﾀﾞﾁｮｳ", type: "ちょう" },
+  { name: "南越前町", reading: "ﾐﾅﾐｴﾁｾﾞﾝﾁｮｳ", type: "ちょう" },
+  { name: "越前町", reading: "ｴﾁｾﾞﾝﾁｮｳ", type: "ちょう" },
+  { name: "美浜町", reading: "ﾐﾊﾏﾁｮｳ", type: "ちょう" },
+  { name: "高浜町", reading: "ﾀｶﾊﾏﾁｮｳ", type: "ちょう" },
+  { name: "おおい町", reading: "ｵｵｲﾁｮｳ", type: "ちょう" },
+  { name: "若狭町", reading: "ﾜｶｻﾁｮｳ", type: "ちょう" },
+  { name: "市川三郷町", reading: "ｲﾁｶﾜﾐｻﾄﾁｮｳ", type: "ちょう" },
+  { name: "早川町", reading: "ﾊﾔｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "身延町", reading: "ﾐﾉﾌﾞﾁｮｳ", type: "ちょう" },
+  { name: "南部町", reading: "ﾅﾝﾌﾞﾁｮｳ", type: "ちょう" },
+  { name: "富士川町", reading: "ﾌｼﾞｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "昭和町", reading: "ｼｮｳﾜﾁｮｳ", type: "ちょう" },
+  { name: "西桂町", reading: "ﾆｼｶﾂﾗﾁｮｳ", type: "ちょう" },
+  { name: "富士河口湖町", reading: "ﾌｼﾞｶﾜｸﾞﾁｺﾏﾁ", type: "ちょう" },
+  { name: "小海町", reading: "ｺｳﾐﾏﾁ", type: "ちょう" },
+  { name: "佐久穂町", reading: "ｻｸﾎﾏﾁ", type: "ちょう" },
+  { name: "軽井沢町", reading: "ｶﾙｲｻﾞﾜﾏﾁ", type: "ちょう" },
+  { name: "御代田町", reading: "ﾐﾖﾀﾏﾁ", type: "ちょう" },
+  { name: "立科町", reading: "ﾀﾃｼﾅﾏﾁ", type: "ちょう" },
+  { name: "長和町", reading: "ﾅｶﾞﾜﾏﾁ", type: "ちょう" },
+  { name: "下諏訪町", reading: "ｼﾓｽﾜﾏﾁ", type: "ちょう" },
+  { name: "富士見町", reading: "ﾌｼﾞﾐﾏﾁ", type: "ちょう" },
+  { name: "辰野町", reading: "ﾀﾂﾉﾏﾁ", type: "ちょう" },
+  { name: "箕輪町", reading: "ﾐﾉﾜﾏﾁ", type: "ちょう" },
+  { name: "飯島町", reading: "ｲｲｼﾞﾏﾏﾁ", type: "ちょう" },
+  { name: "松川町", reading: "ﾏﾂｶﾜﾏﾁ", type: "ちょう" },
+  { name: "高森町", reading: "ﾀｶﾓﾘﾏﾁ", type: "ちょう" },
+  { name: "阿南町", reading: "ｱﾅﾝﾁｮｳ", type: "ちょう" },
+  { name: "上松町", reading: "ｱｹﾞﾏﾂﾏﾁ", type: "ちょう" },
+  { name: "南木曽町", reading: "ﾅｷﾞｿﾏﾁ", type: "ちょう" },
+  { name: "木曽町", reading: "ｷｿﾏﾁ", type: "ちょう" },
+  { name: "池田町", reading: "ｲｹﾀﾞﾏﾁ", type: "ちょう" },
+  { name: "坂城町", reading: "ｻｶｷﾏﾁ", type: "ちょう" },
+  { name: "小布施町", reading: "ｵﾌﾞｾﾏﾁ", type: "ちょう" },
+  { name: "山ノ内町", reading: "ﾔﾏﾉｳﾁﾏﾁ", type: "ちょう" },
+  { name: "信濃町", reading: "ｼﾅﾉﾏﾁ", type: "ちょう" },
+  { name: "飯綱町", reading: "ｲｲﾂﾞﾅﾏﾁ", type: "ちょう" },
+  { name: "岐南町", reading: "ｷﾞﾅﾝﾁｮｳ", type: "ちょう" },
+  { name: "笠松町", reading: "ｶｻﾏﾂﾁｮｳ", type: "ちょう" },
+  { name: "養老町", reading: "ﾖｳﾛｳﾁｮｳ", type: "ちょう" },
+  { name: "垂井町", reading: "ﾀﾙｲﾁｮｳ", type: "ちょう" },
+  { name: "関ケ原町", reading: "ｾｷｶﾞﾊﾗﾁｮｳ", type: "ちょう" },
+  { name: "神戸町", reading: "ｺﾞｳﾄﾞﾁｮｳ", type: "ちょう" },
+  { name: "輪之内町", reading: "ﾜﾉｳﾁﾁｮｳ", type: "ちょう" },
+  { name: "安八町", reading: "ｱﾝﾊﾟﾁﾁｮｳ", type: "ちょう" },
+  { name: "揖斐川町", reading: "ｲﾋﾞｶﾞﾜﾁｮｳ", type: "ちょう" },
+  { name: "大野町", reading: "ｵｵﾉﾁｮｳ", type: "ちょう" },
+  { name: "池田町", reading: "ｲｹﾀﾞﾁｮｳ", type: "ちょう" },
+  { name: "北方町", reading: "ｷﾀｶﾞﾀﾁｮｳ", type: "ちょう" },
+  { name: "坂祝町", reading: "ｻｶﾎｷﾞﾁｮｳ", type: "ちょう" },
+  { name: "富加町", reading: "ﾄﾐｶﾁｮｳ", type: "ちょう" },
+  { name: "川辺町", reading: "ｶﾜﾍﾞﾁｮｳ", type: "ちょう" },
+  { name: "七宗町", reading: "ﾋﾁｿｳﾁｮｳ", type: "ちょう" },
+  { name: "八百津町", reading: "ﾔｵﾂﾁｮｳ", type: "ちょう" },
+  { name: "白川町", reading: "ｼﾗｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "御嵩町", reading: "ﾐﾀｹﾁｮｳ", type: "ちょう" },
+  { name: "東伊豆町", reading: "ﾋｶﾞｼｲｽﾞﾁｮｳ", type: "ちょう" },
+  { name: "河津町", reading: "ｶﾜﾂﾞﾁｮｳ", type: "ちょう" },
+  { name: "南伊豆町", reading: "ﾐﾅﾐｲｽﾞﾁｮｳ", type: "ちょう" },
+  { name: "松崎町", reading: "ﾏﾂｻﾞｷﾁｮｳ", type: "ちょう" },
+  { name: "西伊豆町", reading: "ﾆｼｲｽﾞﾁｮｳ", type: "ちょう" },
+  { name: "函南町", reading: "ｶﾝﾅﾐﾁｮｳ", type: "ちょう" },
+  { name: "清水町", reading: "ｼﾐｽﾞﾁｮｳ", type: "ちょう" },
+  { name: "長泉町", reading: "ﾅｶﾞｲｽﾞﾐﾁｮｳ", type: "ちょう" },
+  { name: "小山町", reading: "ｵﾔﾏﾁｮｳ", type: "ちょう" },
+  { name: "吉田町", reading: "ﾖｼﾀﾞﾁｮｳ", type: "ちょう" },
+  { name: "川根本町", reading: "ｶﾜﾈﾎﾝﾁｮｳ", type: "ちょう" },
+  { name: "森町", reading: "ﾓﾘﾏﾁ", type: "ちょう" },
+  { name: "東郷町", reading: "ﾄｳｺﾞｳﾁｮｳ", type: "ちょう" },
+  { name: "豊山町", reading: "ﾄﾖﾔﾏﾁｮｳ", type: "ちょう" },
+  { name: "大口町", reading: "ｵｵｸﾞﾁﾁｮｳ", type: "ちょう" },
+  { name: "扶桑町", reading: "ﾌｿｳﾁｮｳ", type: "ちょう" },
+  { name: "大治町", reading: "ｵｵﾊﾙﾁｮｳ", type: "ちょう" },
+  { name: "蟹江町", reading: "ｶﾆｴﾁｮｳ", type: "ちょう" },
+  { name: "阿久比町", reading: "ｱｸﾞｲﾁｮｳ", type: "ちょう" },
+  { name: "東浦町", reading: "ﾋｶﾞｼｳﾗﾁｮｳ", type: "ちょう" },
+  { name: "南知多町", reading: "ﾐﾅﾐﾁﾀﾁｮｳ", type: "ちょう" },
+  { name: "美浜町", reading: "ﾐﾊﾏﾁｮｳ", type: "ちょう" },
+  { name: "武豊町", reading: "ﾀｹﾄﾖﾁｮｳ", type: "ちょう" },
+  { name: "幸田町", reading: "ｺｳﾀﾁｮｳ", type: "ちょう" },
+  { name: "設楽町", reading: "ｼﾀﾗﾁｮｳ", type: "ちょう" },
+  { name: "東栄町", reading: "ﾄｳｴｲﾁｮｳ", type: "ちょう" },
+  { name: "木曽岬町", reading: "ｷｿｻｷﾁｮｳ", type: "ちょう" },
+  { name: "東員町", reading: "ﾄｳｲﾝﾁｮｳ", type: "ちょう" },
+  { name: "菰野町", reading: "ｺﾓﾉﾁｮｳ", type: "ちょう" },
+  { name: "朝日町", reading: "ｱｻﾋﾁｮｳ", type: "ちょう" },
+  { name: "川越町", reading: "ｶﾜｺﾞｴﾁｮｳ", type: "ちょう" },
+  { name: "多気町", reading: "ﾀｷﾁｮｳ", type: "ちょう" },
+  { name: "明和町", reading: "ﾒｲﾜﾁｮｳ", type: "ちょう" },
+  { name: "大台町", reading: "ｵｵﾀﾞｲﾁｮｳ", type: "ちょう" },
+  { name: "玉城町", reading: "ﾀﾏｷﾁｮｳ", type: "ちょう" },
+  { name: "度会町", reading: "ﾜﾀﾗｲﾁｮｳ", type: "ちょう" },
+  { name: "大紀町", reading: "ﾀｲｷﾁｮｳ", type: "ちょう" },
+  { name: "南伊勢町", reading: "ﾐﾅﾐｲｾﾁｮｳ", type: "ちょう" },
+  { name: "紀北町", reading: "ｷﾎｸﾁｮｳ", type: "ちょう" },
+  { name: "御浜町", reading: "ﾐﾊﾏﾁｮｳ", type: "ちょう" },
+  { name: "紀宝町", reading: "ｷﾎｳﾁｮｳ", type: "ちょう" },
+  { name: "日野町", reading: "ﾋﾉﾁｮｳ", type: "ちょう" },
+  { name: "竜王町", reading: "ﾘﾕｳｵｳﾁｮｳ", type: "ちょう" },
+  { name: "愛荘町", reading: "ｱｲｼｮｳﾁｮｳ", type: "ちょう" },
+  { name: "豊郷町", reading: "ﾄﾖｻﾄﾁｮｳ", type: "ちょう" },
+  { name: "甲良町", reading: "ｺｳﾗﾁｮｳ", type: "ちょう" },
+  { name: "多賀町", reading: "ﾀｶﾞﾁｮｳ", type: "ちょう" },
+  { name: "大山崎町", reading: "ｵｵﾔﾏｻﾞｷﾁｮｳ", type: "ちょう" },
+  { name: "久御山町", reading: "ｸﾐﾔﾏﾁｮｳ", type: "ちょう" },
+  { name: "井手町", reading: "ｲﾃﾞﾁｮｳ", type: "ちょう" },
+  { name: "宇治田原町", reading: "ｳｼﾞﾀﾜﾗﾁｮｳ", type: "ちょう" },
+  { name: "笠置町", reading: "ｶｻｷﾞﾁｮｳ", type: "ちょう" },
+  { name: "和束町", reading: "ﾜﾂﾞｶﾁｮｳ", type: "ちょう" },
+  { name: "精華町", reading: "ｾｲｶﾁｮｳ", type: "ちょう" },
+  { name: "京丹波町", reading: "ｷｮｳﾀﾝﾊﾞﾁｮｳ", type: "ちょう" },
+  { name: "伊根町", reading: "ｲﾈﾁｮｳ", type: "ちょう" },
+  { name: "与謝野町", reading: "ﾖｻﾉﾁｮｳ", type: "ちょう" },
+  { name: "島本町", reading: "ｼﾏﾓﾄﾁｮｳ", type: "ちょう" },
+  { name: "豊能町", reading: "ﾄﾖﾉﾁｮｳ", type: "ちょう" },
+  { name: "能勢町", reading: "ﾉｾﾁｮｳ", type: "ちょう" },
+  { name: "忠岡町", reading: "ﾀﾀﾞｵｶﾁｮｳ", type: "ちょう" },
+  { name: "熊取町", reading: "ｸﾏﾄﾘﾁｮｳ", type: "ちょう" },
+  { name: "田尻町", reading: "ﾀｼﾞﾘﾁｮｳ", type: "ちょう" },
+  { name: "岬町", reading: "ﾐｻｷﾁｮｳ", type: "ちょう" },
+  { name: "太子町", reading: "ﾀｲｼﾁｮｳ", type: "ちょう" },
+  { name: "河南町", reading: "ｶﾅﾝﾁｮｳ", type: "ちょう" },
+  { name: "猪名川町", reading: "ｲﾅｶﾞﾜﾁｮｳ", type: "ちょう" },
+  { name: "多可町", reading: "ﾀｶﾁｮｳ", type: "ちょう" },
+  { name: "稲美町", reading: "ｲﾅﾐﾁｮｳ", type: "ちょう" },
+  { name: "播磨町", reading: "ﾊﾘﾏﾁｮｳ", type: "ちょう" },
+  { name: "市川町", reading: "ｲﾁｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "福崎町", reading: "ﾌｸｻｷﾁｮｳ", type: "ちょう" },
+  { name: "神河町", reading: "ｶﾐｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "太子町", reading: "ﾀｲｼﾁｮｳ", type: "ちょう" },
+  { name: "上郡町", reading: "ｶﾐｺﾞｵﾘﾁｮｳ", type: "ちょう" },
+  { name: "佐用町", reading: "ｻﾖｳﾁｮｳ", type: "ちょう" },
+  { name: "香美町", reading: "ｶﾐﾁｮｳ", type: "ちょう" },
+  { name: "新温泉町", reading: "ｼﾝｵﾝｾﾝﾁｮｳ", type: "ちょう" },
+  { name: "平群町", reading: "ﾍｸﾞﾘﾁｮｳ", type: "ちょう" },
+  { name: "三郷町", reading: "ｻﾝｺﾞｳﾁｮｳ", type: "ちょう" },
+  { name: "斑鳩町", reading: "ｲｶﾙｶﾞﾁｮｳ", type: "ちょう" },
+  { name: "安堵町", reading: "ｱﾝﾄﾞﾁｮｳ", type: "ちょう" },
+  { name: "川西町", reading: "ｶﾜﾆｼﾁｮｳ", type: "ちょう" },
+  { name: "三宅町", reading: "ﾐﾔｹﾁｮｳ", type: "ちょう" },
+  { name: "田原本町", reading: "ﾀﾜﾗﾓﾄﾁｮｳ", type: "ちょう" },
+  { name: "高取町", reading: "ﾀｶﾄﾘﾁｮｳ", type: "ちょう" },
+  { name: "上牧町", reading: "ｶﾝﾏｷﾁｮｳ", type: "ちょう" },
+  { name: "王寺町", reading: "ｵｳｼﾞﾁｮｳ", type: "ちょう" },
+  { name: "広陵町", reading: "ｺｳﾘﾖｳﾁｮｳ", type: "ちょう" },
+  { name: "河合町", reading: "ｶﾜｲﾁｮｳ", type: "ちょう" },
+  { name: "吉野町", reading: "ﾖｼﾉﾁｮｳ", type: "ちょう" },
+  { name: "大淀町", reading: "ｵｵﾖﾄﾞﾁｮｳ", type: "ちょう" },
+  { name: "下市町", reading: "ｼﾓｲﾁﾁｮｳ", type: "ちょう" },
+  { name: "紀美野町", reading: "ｷﾐﾉﾁｮｳ", type: "ちょう" },
+  { name: "かつらぎ町", reading: "ｶﾂﾗｷﾞﾁｮｳ", type: "ちょう" },
+  { name: "九度山町", reading: "ｸﾄﾞﾔﾏﾁｮｳ", type: "ちょう" },
+  { name: "高野町", reading: "ｺｳﾔﾁｮｳ", type: "ちょう" },
+  { name: "湯浅町", reading: "ﾕｱｻﾁｮｳ", type: "ちょう" },
+  { name: "広川町", reading: "ﾋﾛｶﾞﾜﾁｮｳ", type: "ちょう" },
+  { name: "有田川町", reading: "ｱﾘﾀﾞｶﾞﾜﾁｮｳ", type: "ちょう" },
+  { name: "美浜町", reading: "ﾐﾊﾏﾁｮｳ", type: "ちょう" },
+  { name: "日高町", reading: "ﾋﾀﾞｶﾁｮｳ", type: "ちょう" },
+  { name: "由良町", reading: "ﾕﾗﾁｮｳ", type: "ちょう" },
+  { name: "印南町", reading: "ｲﾅﾐﾁｮｳ", type: "ちょう" },
+  { name: "みなべ町", reading: "ﾐﾅﾍﾞﾁｮｳ", type: "ちょう" },
+  { name: "日高川町", reading: "ﾋﾀﾞｶｶﾞﾜﾁｮｳ", type: "ちょう" },
+  { name: "白浜町", reading: "ｼﾗﾊﾏﾁｮｳ", type: "ちょう" },
+  { name: "上富田町", reading: "ｶﾐﾄﾝﾀﾞﾁｮｳ", type: "ちょう" },
+  { name: "すさみ町", reading: "ｽｻﾐﾁｮｳ", type: "ちょう" },
+  { name: "那智勝浦町", reading: "ﾅﾁｶﾂｳﾗﾁｮｳ", type: "ちょう" },
+  { name: "太地町", reading: "ﾀｲｼﾞﾁｮｳ", type: "ちょう" },
+  { name: "古座川町", reading: "ｺｻﾞｶﾞﾜﾁｮｳ", type: "ちょう" },
+  { name: "串本町", reading: "ｸｼﾓﾄﾁｮｳ", type: "ちょう" },
+  { name: "岩美町", reading: "ｲﾜﾐﾁｮｳ", type: "ちょう" },
+  { name: "若桜町", reading: "ﾜｶｻﾁｮｳ", type: "ちょう" },
+  { name: "智頭町", reading: "ﾁﾂﾞﾁｮｳ", type: "ちょう" },
+  { name: "八頭町", reading: "ﾔｽﾞﾁｮｳ", type: "ちょう" },
+  { name: "三朝町", reading: "ﾐｻｻﾁｮｳ", type: "ちょう" },
+  { name: "湯梨浜町", reading: "ﾕﾘﾊﾏﾁｮｳ", type: "ちょう" },
+  { name: "琴浦町", reading: "ｺﾄｳﾗﾁｮｳ", type: "ちょう" },
+  { name: "北栄町", reading: "ﾎｸｴｲﾁｮｳ", type: "ちょう" },
+  { name: "大山町", reading: "ﾀﾞｲｾﾝﾁｮｳ", type: "ちょう" },
+  { name: "南部町", reading: "ﾅﾝﾌﾞﾁｮｳ", type: "ちょう" },
+  { name: "伯耆町", reading: "ﾎｳｷﾁｮｳ", type: "ちょう" },
+  { name: "日南町", reading: "ﾆﾁﾅﾝﾁｮｳ", type: "ちょう" },
+  { name: "日野町", reading: "ﾋﾉﾁｮｳ", type: "ちょう" },
+  { name: "江府町", reading: "ｺｳﾌﾁｮｳ", type: "ちょう" },
+  { name: "奥出雲町", reading: "ｵｸｲｽﾞﾓﾁｮｳ", type: "ちょう" },
+  { name: "飯南町", reading: "ｲｲﾅﾝﾁｮｳ", type: "ちょう" },
+  { name: "川本町", reading: "ｶﾜﾓﾄﾏﾁ", type: "ちょう" },
+  { name: "美郷町", reading: "ﾐｻﾄﾁｮｳ", type: "ちょう" },
+  { name: "邑南町", reading: "ｵｵﾅﾝﾁｮｳ", type: "ちょう" },
+  { name: "津和野町", reading: "ﾂﾜﾉﾁｮｳ", type: "ちょう" },
+  { name: "吉賀町", reading: "ﾖｼｶﾁｮｳ", type: "ちょう" },
+  { name: "海士町", reading: "ｱﾏﾁｮｳ", type: "ちょう" },
+  { name: "西ノ島町", reading: "ﾆｼﾉｼﾏﾁｮｳ", type: "ちょう" },
+  { name: "隠岐の島町", reading: "ｵｷﾉｼﾏﾁｮｳ", type: "ちょう" },
+  { name: "和気町", reading: "ﾜｹﾁｮｳ", type: "ちょう" },
+  { name: "早島町", reading: "ﾊﾔｼﾏﾁｮｳ", type: "ちょう" },
+  { name: "里庄町", reading: "ｻﾄｼｮｳﾁｮｳ", type: "ちょう" },
+  { name: "矢掛町", reading: "ﾔｶｹﾞﾁｮｳ", type: "ちょう" },
+  { name: "鏡野町", reading: "ｶｶﾞﾐﾉﾁｮｳ", type: "ちょう" },
+  { name: "勝央町", reading: "ｼｮｳｵｳﾁｮｳ", type: "ちょう" },
+  { name: "奈義町", reading: "ﾅｷﾞﾁｮｳ", type: "ちょう" },
+  { name: "久米南町", reading: "ｸﾒﾅﾝﾁｮｳ", type: "ちょう" },
+  { name: "美咲町", reading: "ﾐｻｷﾁｮｳ", type: "ちょう" },
+  { name: "吉備中央町", reading: "ｷﾋﾞﾁｭｳｵｳﾁｮｳ", type: "ちょう" },
+  { name: "府中町", reading: "ﾌﾁｭｳﾁｮｳ", type: "ちょう" },
+  { name: "海田町", reading: "ｶｲﾀﾁｮｳ", type: "ちょう" },
+  { name: "熊野町", reading: "ｸﾏﾉﾁｮｳ", type: "ちょう" },
+  { name: "坂町", reading: "ｻｶﾁｮｳ", type: "ちょう" },
+  { name: "安芸太田町", reading: "ｱｷｵｵﾀﾁｮｳ", type: "ちょう" },
+  { name: "北広島町", reading: "ｷﾀﾋﾛｼﾏﾁｮｳ", type: "ちょう" },
+  { name: "大崎上島町", reading: "ｵｵｻｷｶﾐｼﾞﾏﾁｮｳ", type: "ちょう" },
+  { name: "世羅町", reading: "ｾﾗﾁｮｳ", type: "ちょう" },
+  { name: "神石高原町", reading: "ｼﾞﾝｾｷｺｳｹﾞﾝﾁｮｳ", type: "ちょう" },
+  { name: "周防大島町", reading: "ｽｵｳｵｵｼﾏﾁｮｳ", type: "ちょう" },
+  { name: "和木町", reading: "ﾜｷﾁｮｳ", type: "ちょう" },
+  { name: "上関町", reading: "ｶﾐﾉｾｷﾁｮｳ", type: "ちょう" },
+  { name: "田布施町", reading: "ﾀﾌﾞｾﾁｮｳ", type: "ちょう" },
+  { name: "平生町", reading: "ﾋﾗｵﾁｮｳ", type: "ちょう" },
+  { name: "阿武町", reading: "ｱﾌﾞﾁｮｳ", type: "ちょう" },
+  { name: "勝浦町", reading: "ｶﾂｳﾗﾁｮｳ", type: "ちょう" },
+  { name: "上勝町", reading: "ｶﾐｶﾂﾁｮｳ", type: "ちょう" },
+  { name: "石井町", reading: "ｲｼｲﾁｮｳ", type: "ちょう" },
+  { name: "神山町", reading: "ｶﾐﾔﾏﾁｮｳ", type: "ちょう" },
+  { name: "那賀町", reading: "ﾅｶﾁｮｳ", type: "ちょう" },
+  { name: "牟岐町", reading: "ﾑｷﾞﾁｮｳ", type: "ちょう" },
+  { name: "美波町", reading: "ﾐﾅﾐﾁｮｳ", type: "ちょう" },
+  { name: "海陽町", reading: "ｶｲﾖｳﾁｮｳ", type: "ちょう" },
+  { name: "松茂町", reading: "ﾏﾂｼｹﾞﾁｮｳ", type: "ちょう" },
+  { name: "北島町", reading: "ｷﾀｼﾞﾏﾁｮｳ", type: "ちょう" },
+  { name: "藍住町", reading: "ｱｲｽﾞﾐﾁｮｳ", type: "ちょう" },
+  { name: "板野町", reading: "ｲﾀﾉﾁｮｳ", type: "ちょう" },
+  { name: "上板町", reading: "ｶﾐｲﾀﾁｮｳ", type: "ちょう" },
+  { name: "つるぎ町", reading: "ﾂﾙｷﾞﾁｮｳ", type: "ちょう" },
+  { name: "東みよし町", reading: "ﾋｶﾞｼﾐﾖｼﾁｮｳ", type: "ちょう" },
+  { name: "土庄町", reading: "ﾄﾉｼｮｳﾁｮｳ", type: "ちょう" },
+  { name: "小豆島町", reading: "ｼｮｳﾄﾞｼﾏﾁｮｳ", type: "ちょう" },
+  { name: "三木町", reading: "ﾐｷﾁｮｳ", type: "ちょう" },
+  { name: "直島町", reading: "ﾅｵｼﾏﾁｮｳ", type: "ちょう" },
+  { name: "宇多津町", reading: "ｳﾀﾂﾞﾁｮｳ", type: "ちょう" },
+  { name: "綾川町", reading: "ｱﾔｶﾞﾜﾁｮｳ", type: "ちょう" },
+  { name: "琴平町", reading: "ｺﾄﾋﾗﾁｮｳ", type: "ちょう" },
+  { name: "多度津町", reading: "ﾀﾄﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "まんのう町", reading: "ﾏﾝﾉｳﾁｮｳ", type: "ちょう" },
+  { name: "上島町", reading: "ｶﾐｼﾞﾏﾁｮｳ", type: "ちょう" },
+  { name: "久万高原町", reading: "ｸﾏｺｳｹﾞﾝﾁｮｳ", type: "ちょう" },
+  { name: "松前町", reading: "ﾏｻｷﾁｮｳ", type: "ちょう" },
+  { name: "砥部町", reading: "ﾄﾍﾞﾁｮｳ", type: "ちょう" },
+  { name: "内子町", reading: "ｳﾁｺﾁｮｳ", type: "ちょう" },
+  { name: "伊方町", reading: "ｲｶﾀﾁｮｳ", type: "ちょう" },
+  { name: "松野町", reading: "ﾏﾂﾉﾁｮｳ", type: "ちょう" },
+  { name: "鬼北町", reading: "ｷﾎｸﾁｮｳ", type: "ちょう" },
+  { name: "愛南町", reading: "ｱｲﾅﾝﾁｮｳ", type: "ちょう" },
+  { name: "東洋町", reading: "ﾄｳﾖｳﾁｮｳ", type: "ちょう" },
+  { name: "奈半利町", reading: "ﾅﾊﾘﾁｮｳ", type: "ちょう" },
+  { name: "田野町", reading: "ﾀﾉﾁｮｳ", type: "ちょう" },
+  { name: "安田町", reading: "ﾔｽﾀﾞﾁｮｳ", type: "ちょう" },
+  { name: "本山町", reading: "ﾓﾄﾔﾏﾁｮｳ", type: "ちょう" },
+  { name: "大豊町", reading: "ｵｵﾄﾖﾁｮｳ", type: "ちょう" },
+  { name: "土佐町", reading: "ﾄｻﾁｮｳ", type: "ちょう" },
+  { name: "いの町", reading: "ｲﾉﾁｮｳ", type: "ちょう" },
+  { name: "仁淀川町", reading: "ﾆﾖﾄﾞｶﾞﾜﾁｮｳ", type: "ちょう" },
+  { name: "中土佐町", reading: "ﾅｶﾄｻﾁｮｳ", type: "ちょう" },
+  { name: "佐川町", reading: "ｻｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "越知町", reading: "ｵﾁﾁｮｳ", type: "ちょう" },
+  { name: "梼原町", reading: "ﾕｽﾊﾗﾁｮｳ", type: "ちょう" },
+  { name: "津野町", reading: "ﾂﾉﾁｮｳ", type: "ちょう" },
+  { name: "四万十町", reading: "ｼﾏﾝﾄﾁｮｳ", type: "ちょう" },
+  { name: "大月町", reading: "ｵｵﾂｷﾁｮｳ", type: "ちょう" },
+  { name: "黒潮町", reading: "ｸﾛｼｵﾁｮｳ", type: "ちょう" },
+  { name: "宇美町", reading: "ｳﾐﾏﾁ", type: "ちょう" },
+  { name: "篠栗町", reading: "ｻｻｸﾞﾘﾏﾁ", type: "ちょう" },
+  { name: "志免町", reading: "ｼﾒﾏﾁ", type: "ちょう" },
+  { name: "須恵町", reading: "ｽｴﾏﾁ", type: "ちょう" },
+  { name: "新宮町", reading: "ｼﾝｸﾞｳﾏﾁ", type: "ちょう" },
+  { name: "久山町", reading: "ﾋｻﾔﾏﾏﾁ", type: "ちょう" },
+  { name: "粕屋町", reading: "ｶｽﾔﾏﾁ", type: "ちょう" },
+  { name: "芦屋町", reading: "ｱｼﾔﾏﾁ", type: "ちょう" },
+  { name: "水巻町", reading: "ﾐｽﾞﾏｷﾏﾁ", type: "ちょう" },
+  { name: "岡垣町", reading: "ｵｶｶﾞｷﾏﾁ", type: "ちょう" },
+  { name: "遠賀町", reading: "ｵﾝｶﾞﾁｮｳ", type: "ちょう" },
+  { name: "小竹町", reading: "ｺﾀｹﾏﾁ", type: "ちょう" },
+  { name: "鞍手町", reading: "ｸﾗﾃﾏﾁ", type: "ちょう" },
+  { name: "桂川町", reading: "ｹｲｾﾝﾏﾁ", type: "ちょう" },
+  { name: "筑前町", reading: "ﾁｸｾﾞﾝﾏﾁ", type: "ちょう" },
+  { name: "大刀洗町", reading: "ﾀﾁｱﾗｲﾏﾁ", type: "ちょう" },
+  { name: "大木町", reading: "ｵｵｷﾏﾁ", type: "ちょう" },
+  { name: "広川町", reading: "ﾋﾛｶﾜﾏﾁ", type: "ちょう" },
+  { name: "香春町", reading: "ｶﾜﾗﾏﾁ", type: "ちょう" },
+  { name: "添田町", reading: "ｿｴﾀﾞﾏﾁ", type: "ちょう" },
+  { name: "糸田町", reading: "ｲﾄﾀﾞﾏﾁ", type: "ちょう" },
+  { name: "川崎町", reading: "ｶﾜｻｷﾏﾁ", type: "ちょう" },
+  { name: "大任町", reading: "ｵｵﾄｳﾏﾁ", type: "ちょう" },
+  { name: "福智町", reading: "ﾌｸﾁﾏﾁ", type: "ちょう" },
+  { name: "苅田町", reading: "ｶﾝﾀﾞﾏﾁ", type: "ちょう" },
+  { name: "みやこ町", reading: "ﾐﾔｺﾏﾁ", type: "ちょう" },
+  { name: "吉富町", reading: "ﾖｼﾄﾐﾏﾁ", type: "ちょう" },
+  { name: "上毛町", reading: "ｺｳｹﾞﾏﾁ", type: "ちょう" },
+  { name: "築上町", reading: "ﾁｸｼﾞｮｳﾏﾁ", type: "ちょう" },
+  { name: "吉野ヶ里町", reading: "ﾖｼﾉｶﾞﾘﾁｮｳ", type: "ちょう" },
+  { name: "基山町", reading: "ｷﾔﾏﾁｮｳ", type: "ちょう" },
+  { name: "上峰町", reading: "ｶﾐﾐﾈﾁｮｳ", type: "ちょう" },
+  { name: "みやき町", reading: "ﾐﾔｷﾁｮｳ", type: "ちょう" },
+  { name: "玄海町", reading: "ｹﾞﾝｶｲﾁｮｳ", type: "ちょう" },
+  { name: "有田町", reading: "ｱﾘﾀﾁｮｳ", type: "ちょう" },
+  { name: "大町町", reading: "ｵｵﾏﾁﾁｮｳ", type: "ちょう" },
+  { name: "江北町", reading: "ｺｳﾎｸﾏﾁ", type: "ちょう" },
+  { name: "白石町", reading: "ｼﾛｲｼﾁｮｳ", type: "ちょう" },
+  { name: "太良町", reading: "ﾀﾗﾁｮｳ", type: "ちょう" },
+  { name: "長与町", reading: "ﾅｶﾞﾖﾁｮｳ", type: "ちょう" },
+  { name: "時津町", reading: "ﾄｷﾞﾂﾁｮｳ", type: "ちょう" },
+  { name: "東彼杵町", reading: "ﾋｶﾞｼｿﾉｷﾞﾁｮｳ", type: "ちょう" },
+  { name: "川棚町", reading: "ｶﾜﾀﾅﾁｮｳ", type: "ちょう" },
+  { name: "波佐見町", reading: "ﾊｻﾐﾁｮｳ", type: "ちょう" },
+  { name: "小値賀町", reading: "ｵﾁﾞｶﾁｮｳ", type: "ちょう" },
+  { name: "佐々町", reading: "ｻｻﾞﾁｮｳ", type: "ちょう" },
+  { name: "新上五島町", reading: "ｼﾝｶﾐｺﾞﾄｳﾁｮｳ", type: "ちょう" },
+  { name: "美里町", reading: "ﾐｻﾄﾏﾁ", type: "ちょう" },
+  { name: "玉東町", reading: "ｷﾞｮｸﾄｳﾏﾁ", type: "ちょう" },
+  { name: "南関町", reading: "ﾅﾝｶﾝﾏﾁ", type: "ちょう" },
+  { name: "長洲町", reading: "ﾅｶﾞｽﾏﾁ", type: "ちょう" },
+  { name: "和水町", reading: "ﾅｺﾞﾐﾏﾁ", type: "ちょう" },
+  { name: "大津町", reading: "ｵｵﾂﾞﾏﾁ", type: "ちょう" },
+  { name: "菊陽町", reading: "ｷｸﾖｳﾏﾁ", type: "ちょう" },
+  { name: "南小国町", reading: "ﾐﾅﾐｵｸﾞﾆﾏﾁ", type: "ちょう" },
+  { name: "小国町", reading: "ｵｸﾞﾆﾏﾁ", type: "ちょう" },
+  { name: "高森町", reading: "ﾀｶﾓﾘﾏﾁ", type: "ちょう" },
+  { name: "御船町", reading: "ﾐﾌﾈﾏﾁ", type: "ちょう" },
+  { name: "嘉島町", reading: "ｶｼﾏﾏﾁ", type: "ちょう" },
+  { name: "益城町", reading: "ﾏｼｷﾏﾁ", type: "ちょう" },
+  { name: "甲佐町", reading: "ｺｳｻﾏﾁ", type: "ちょう" },
+  { name: "山都町", reading: "ﾔﾏﾄﾁｮｳ", type: "ちょう" },
+  { name: "氷川町", reading: "ﾋｶﾜﾁｮｳ", type: "ちょう" },
+  { name: "芦北町", reading: "ｱｼｷﾀﾏﾁ", type: "ちょう" },
+  { name: "津奈木町", reading: "ﾂﾅｷﾞﾏﾁ", type: "ちょう" },
+  { name: "錦町", reading: "ﾆｼｷﾏﾁ", type: "ちょう" },
+  { name: "多良木町", reading: "ﾀﾗｷﾞﾏﾁ", type: "ちょう" },
+  { name: "湯前町", reading: "ﾕﾉﾏｴﾏﾁ", type: "ちょう" },
+  { name: "あさぎり町", reading: "ｱｻｷﾞﾘﾁｮｳ", type: "ちょう" },
+  { name: "苓北町", reading: "ﾚｲﾎｸﾏﾁ", type: "ちょう" },
+  { name: "日出町", reading: "ﾋｼﾞﾏﾁ", type: "ちょう" },
+  { name: "九重町", reading: "ｺｺﾉｴﾏﾁ", type: "ちょう" },
+  { name: "玖珠町", reading: "ｸｽﾏﾁ", type: "ちょう" },
+  { name: "三股町", reading: "ﾐﾏﾀﾁｮｳ", type: "ちょう" },
+  { name: "高原町", reading: "ﾀｶﾊﾙﾁｮｳ", type: "ちょう" },
+  { name: "国富町", reading: "ｸﾆﾄﾐﾁｮｳ", type: "ちょう" },
+  { name: "綾町", reading: "ｱﾔﾁｮｳ", type: "ちょう" },
+  { name: "高鍋町", reading: "ﾀｶﾅﾍﾞﾁｮｳ", type: "ちょう" },
+  { name: "新富町", reading: "ｼﾝﾄﾐﾁｮｳ", type: "ちょう" },
+  { name: "木城町", reading: "ｷｼﾞｮｳﾁｮｳ", type: "ちょう" },
+  { name: "川南町", reading: "ｶﾜﾐﾅﾐﾁｮｳ", type: "ちょう" },
+  { name: "都農町", reading: "ﾂﾉﾁｮｳ", type: "ちょう" },
+  { name: "門川町", reading: "ｶﾄﾞｶﾞﾜﾁｮｳ", type: "ちょう" },
+  { name: "美郷町", reading: "ﾐｻﾄﾁｮｳ", type: "ちょう" },
+  { name: "高千穂町", reading: "ﾀｶﾁﾎﾁｮｳ", type: "ちょう" },
+  { name: "日之影町", reading: "ﾋﾉｶｹﾞﾁｮｳ", type: "ちょう" },
+  { name: "五ヶ瀬町", reading: "ｺﾞｶｾﾁｮｳ", type: "ちょう" },
+  { name: "さつま町", reading: "ｻﾂﾏﾁｮｳ", type: "ちょう" },
+  { name: "長島町", reading: "ﾅｶﾞｼﾏﾁｮｳ", type: "ちょう" },
+  { name: "湧水町", reading: "ﾕｳｽｲﾁｮｳ", type: "ちょう" },
+  { name: "大崎町", reading: "ｵｵｻｷﾁｮｳ", type: "ちょう" },
+  { name: "東串良町", reading: "ﾋｶﾞｼｸｼﾗﾁｮｳ", type: "ちょう" },
+  { name: "錦江町", reading: "ｷﾝｺｳﾁｮｳ", type: "ちょう" },
+  { name: "南大隅町", reading: "ﾐﾅﾐｵｵｽﾐﾁｮｳ", type: "ちょう" },
+  { name: "肝付町", reading: "ｷﾓﾂｷﾁｮｳ", type: "ちょう" },
+  { name: "中種子町", reading: "ﾅｶﾀﾈﾁｮｳ", type: "ちょう" },
+  { name: "南種子町", reading: "ﾐﾅﾐﾀﾈﾁｮｳ", type: "ちょう" },
+  { name: "屋久島町", reading: "ﾔｸｼﾏﾁｮｳ", type: "ちょう" },
+  { name: "瀬戸内町", reading: "ｾﾄｳﾁﾁｮｳ", type: "ちょう" },
+  { name: "龍郷町", reading: "ﾀﾂｺﾞｳﾁｮｳ", type: "ちょう" },
+  { name: "喜界町", reading: "ｷｶｲﾁｮｳ", type: "ちょう" },
+  { name: "徳之島町", reading: "ﾄｸﾉｼﾏﾁｮｳ", type: "ちょう" },
+  { name: "天城町", reading: "ｱﾏｷﾞﾁｮｳ", type: "ちょう" },
+  { name: "伊仙町", reading: "ｲｾﾝﾁｮｳ", type: "ちょう" },
+  { name: "和泊町", reading: "ﾜﾄﾞﾏﾘﾁｮｳ", type: "ちょう" },
+  { name: "知名町", reading: "ﾁﾅﾁｮｳ", type: "ちょう" },
+  { name: "与論町", reading: "ﾖﾛﾝﾁｮｳ", type: "ちょう" },
+  { name: "本部町", reading: "ﾓﾄﾌﾞﾁｮｳ", type: "ちょう" },
+  { name: "金武町", reading: "ｷﾝﾁｮｳ", type: "ちょう" },
+  { name: "嘉手納町", reading: "ｶﾃﾞﾅﾁｮｳ", type: "ちょう" },
+  { name: "北谷町", reading: "ﾁﾔﾀﾝﾁｮｳ", type: "ちょう" },
+  { name: "西原町", reading: "ﾆｼﾊﾗﾁｮｳ", type: "ちょう" },
+  { name: "与那原町", reading: "ﾖﾅﾊﾞﾙﾁｮｳ", type: "ちょう" },
+  { name: "南風原町", reading: "ﾊｴﾊﾞﾙﾁｮｳ", type: "ちょう" },
+  { name: "久米島町", reading: "ｸﾒｼﾞﾏﾁｮｳ", type: "ちょう" },
+  { name: "八重瀬町", reading: "ﾔｴｾﾁｮｳ", type: "ちょう" },
+  { name: "竹富町", reading: "ﾀｹﾄﾐﾁｮｳ", type: "ちょう" },
+  { name: "与那国町", reading: "ﾖﾅｸﾞﾆﾁｮｳ", type: "ちょう" }
+];
+
+    function fixTownData(town) {
+        const kanaMap = { 'ｶﾞ': 'が', 'ｷﾞ': 'ぎ', 'ｸﾞ': 'ぐ', 'ｹﾞ': 'げ', 'ｺﾞ': 'ご', 'ｻﾞ': 'ざ', 'ｼﾞ': 'じ', 'ｽﾞ': 'ず', 'ｾﾞ': 'ぜ', 'ｿﾞ': 'ぞ', 'ﾀﾞ': 'だ', 'ﾁﾞ': 'ぢ', 'ﾂﾞ': 'づ', 'ﾃﾞ': 'で', 'ﾄﾞ': 'ど', 'ﾊﾞ': 'ば', 'ﾋﾞ': 'び', 'ﾌﾞ': 'ぶ', 'ﾍﾞ': 'べ', 'ﾎﾞ': 'ぼ', 'ﾊﾟ': 'ぱ', 'ﾋﾟ': 'ぴ', 'ﾌﾟ': 'ぷ', 'ﾍﾟ': 'ぺ', 'ﾎﾟ': 'ぽ', 'ｱ': 'あ', 'ｲ': 'い', 'ｳ': 'う', 'ｴ': 'え', 'ｵ': 'お', 'ｶ': 'か', 'ｷ': 'き', 'ｸ': 'く', 'ｹ': 'け', 'ｺ': 'こ', 'ｻ': 'さ', 'ｼ': 'し', 'ｽ': 'す', 'ｾ': 'せ', 'ｿ': 'そ', 'ﾀ': 'た', 'ﾁ': 'ち', 'ﾂ': 'つ', 'ﾃ': 'て', 'ﾄ': 'と', 'ﾅ': 'な', 'ﾆ': 'に', 'ﾇ': 'ぬ', 'ﾈ': 'ね', 'ﾉ': 'の', 'ﾊ': 'は', 'ﾋ': 'ひ', 'ﾌ': 'ふ', 'ﾍ': 'へ', 'ﾎ': 'ほ', 'ﾏ': 'ま', 'ﾐ': 'み', 'ﾑ': 'む', 'ﾒ': 'め', 'ﾓ': 'も', 'ﾔ': 'や', 'ﾕ': 'ゆ', 'ﾖ': 'よ', 'ﾗ': 'ら', 'ﾘ': 'り', 'ﾙ': 'る', 'ﾚ': 'れ', 'ﾛ': 'ろ', 'ﾜ': 'わ', 'ｦ': 'を', 'ﾝ': 'ん', 'ｧ': 'ぁ', 'ｨ': 'ぃ', 'ｩ': 'ぅ', 'ｪ': 'ぇ', 'ｫ': 'ぉ', 'ｬ': 'ゃ', 'ｭ': 'ゅ', 'ｮ': 'ょ', 'ｯ': 'っ', 'ｰ': 'ー' };
+        let readingHiragana = town.reading.replace(/[ｶ-ﾄﾊ-ﾎ]ﾞ|[ﾊ-ﾎ]ﾟ/g, m => kanaMap[m] || m);
+        readingHiragana = readingHiragana.replace(/[ｱ-ﾝｧ-ｫｬ-ｮｯｰ]/g, m => kanaMap[m] || m);
+        return { name: town.name, reading: readingHiragana, type: readingHiragana.endsWith('まち') ? 'まち' : 'ちょう' };
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+        
+        if(tabId === 'search') {
+            document.querySelectorAll('.tab')[0].classList.add('active');
+            document.getElementById('tab-search').classList.add('active');
+        } else if (tabId === 'quiz') {
+            document.querySelectorAll('.tab')[1].classList.add('active');
+            document.getElementById('tab-quiz').classList.add('active');
+            if (!currentTown) nextQuestion();
+        } else if (tabId === 'guide') {
+            document.querySelectorAll('.tab')[2].classList.add('active');
+            document.getElementById('tab-guide').classList.add('active');
+        } else if (tabId === 'policy') {
+            document.querySelectorAll('.tab')[3].classList.add('active');
+            document.getElementById('tab-policy').classList.add('active');
+        }
+    }
+
+    function searchTown() {
+        const input = document.getElementById("searchInput").value.trim();
+        const resultDiv = document.getElementById("search-result");
+        
+        if (townData.length === 0) {
+            resultDiv.innerHTML = "⚠️ データがまだ登録されていません。";
+            return;
+        }
+        if (!input) {
+            resultDiv.innerHTML = "町名を入力してください🤔";
+            return;
+        }
+
+        let rawFound = townData.find(t => 
+            t.name === input || 
+            t.name === input + "町" || 
+            fixTownData(t).reading.startsWith(input)
+        );
+
+        if (!rawFound) {
+            rawFound = townData.find(t => 
+                t.name.includes(input) || 
+                t.reading.includes(input) || 
+                fixTownData(t).reading.includes(input)
+            );
+        }
+
+        if (rawFound) {
+            const found = fixTownData(rawFound);
+            const colorClass = found.type === "まち" ? "machi" : "chou";
+            const baseSearchUrl = "https://search.rakuten.co.jp/search/mall/" + encodeURIComponent("ふるさと納税 " + found.name);
+            const affiliateUrl = "https://hb.afl.rakuten.co.jp/hgc/55a28941.7537c1f8.55a28942.ef875bbb/?pc=" + encodeURIComponent(baseSearchUrl);
+            
+            resultDiv.innerHTML = `
+                ${found.name}の読み方は<br>「<span class="${colorClass}">${found.type}</span>」です！<br>
+                <span style="font-size:14px; color:#666;">（${found.reading}）</span>
+                <div class="furusato-box">
+                    <p style="font-size:14px; margin:0; color:#c0392b;">🎁 ${found.name}を応援しよう！</p>
+                    <a href="${affiliateUrl}" target="_blank" class="furusato-btn">
+                        ${found.name}のふるさと納税返礼品を見る
+                    </a>
+                </div>
+            `;
+        } else {
+            resultDiv.innerHTML = '見つかりませんでした😢<br><span style="font-size:14px; font-weight:normal;">入力が間違っているか、市や村の可能性があります。</span>';
+        }
+    }
+
+    let currentTown = null;
+    let currentStreak = 0;
+    let hasAnswered = false;
+    let unusedTowns = []; // まだ出題されていない町のリスト
+
+    function nextQuestion() {
+        if (townData.length === 0) {
+            document.getElementById("question-box").innerText = "データ未登録";
+            return;
+        }
+        hasAnswered = false; 
+
+        // 未出題リストが空っぽの場合（初回プレイ時やリセット時）は、全データを補充する
+        if (unusedTowns.length === 0) {
+            unusedTowns = [...townData];
+        }
+
+        // 「まだ出題されていないリスト」の中からランダムに1つ選ぶ
+        const randomIndex = Math.floor(Math.random() * unusedTowns.length);
+        currentTown = fixTownData(unusedTowns[randomIndex]); 
+
+        // 選んだ町を未出題リストから削除する
+        unusedTowns.splice(randomIndex, 1);
+
+        document.getElementById("question-box").innerText = currentTown.name;
+        document.getElementById("quiz-result").innerText = "";
+        document.getElementById("next-btn").style.display = "none";
+        const shareContainer = document.getElementById("share-btn-container");
+        if (shareContainer) shareContainer.remove();
+    }
+
+    function checkAnswer(selectedType) {
+        if (!currentTown) return;
+        if (hasAnswered) return;
+        
+        hasAnswered = true; 
+
+        const resultMsg = document.getElementById("quiz-result");
+        const baseSearchUrl = "https://search.rakuten.co.jp/search/mall/" + encodeURIComponent("ふるさと納税 " + currentTown.name);
+        const affiliateUrl = "https://hb.afl.rakuten.co.jp/hgc/55a28941.7537c1f8.55a28942.ef875bbb/?pc=" + encodeURIComponent(baseSearchUrl);
+        
+        let isCorrect = (selectedType === currentTown.type);
+        let previousStreak = currentStreak;
+
+        if (isCorrect) {
+            currentStreak++;
+            
+            if (currentStreak >= townData.length) {
+                resultMsg.innerHTML = `🎉 祝・完全制覇！！！<br><span style="font-size:16px; font-weight:normal;">全 ${townData.length} 件の町名を被りなしで連続正解しました！あなたは真の町名マスターです👑</span>`;
+                resultMsg.style.color = "#f39c12"; 
+            } else {
+                resultMsg.innerHTML = `⭕ 正解！<br><span style="font-size:16px; font-weight:normal;">（${currentTown.reading}）</span>`;
+                resultMsg.style.color = "#e74c3c";
+            }
+        } else {
+            currentStreak = 0;
+            unusedTowns = []; // 間違えたら未出題リストをリセット
+            resultMsg.innerHTML = `❌ 残念！正解は「${currentTown.type}」<br><span style="font-size:16px; font-weight:normal;">（${currentTown.reading}）</span>`;
+            resultMsg.style.color = "#34495e";
+        }
+
+        document.getElementById("streak-count").innerText = currentStreak;
+
+        let shareText = "";
+        if (isCorrect) {
+            if (currentStreak >= townData.length) {
+                shareText = `【全国町名クイズ】🎉完全制覇達成🎉\n全国743件すべての「町」の読み方を連続で当てました！私は真の町名マスターです👑\n👇挑戦者求む👇\n`;
+            } else {
+                shareText = `【全国町名クイズ】${currentStreak}問連続正解中🔥\n「${currentTown.name}」の正しい読み方は「${currentTown.type}」！\nあなたは何問連続で当てられる？👇\n`;
+            }
+        } else {
+            if (previousStreak > 0) {
+                shareText = `【全国町名クイズ】${previousStreak}問連続正解でゲームオーバー😇\n「${currentTown.name}」の読み方、引っかけだろ...\nあなたは何問連続で当てられる？👇\n`;
+            } else {
+                shareText = `【全国町名クイズ】「${currentTown.name}」の正しい読み方は「まち」「ちょう」どっち？\nいきなり間違えた😇 あなたも挑戦してみて！👇\n`;
+            }
+        }
+        
+        const siteUrl = "https://machi-chou-quiz.com"; 
+        const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(siteUrl)}&hashtags=町名クイズ,まちかちょうか`;
+
+        resultMsg.innerHTML += `
+            <div style="margin-top:15px; font-size:14px;">
+                <a href="${affiliateUrl}" target="_blank" style="color:#3498db; text-decoration:underline;">
+                    👉 ${currentTown.name}のふるさと納税を見てみる
+                </a>
+            </div>
+            <div id="share-btn-container" style="margin-top: 15px;">
+                <a href="${xShareUrl}" target="_blank" class="share-x-btn">
+                    𝕏 で結果をシェアする
+                </a>
+            </div>
+        `;
+        document.getElementById("next-btn").style.display = "inline-block";
+    }
+</script>
+</body>
+</html>

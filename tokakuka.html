@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+ <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0YLDE1DNDB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0YLDE1DNDB');
+    </script>
+
+    <!-- ↓ Google AdSenseの審査用コード ↓ -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7252507673212109" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-7252507673212109">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>都か区か？ 東京施設検索＆クイズ</title>
+    <style>
+        body { font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif; background-color: #f4f6f9; color: #333; text-align: center; padding: 20px 10px; margin: 0; }
+        .container { max-width: 550px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; }
+        .tabs { display: flex; background-color: #2c3e50; }
+        .tab { flex: 1; padding: 12px 0; color: white; font-size: 13px; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        .tab.active { background-color: #e74c3c; } /* TOKAKUKAは少しポップな赤系に */
+        .tab:not(.active):hover { background-color: #34495e; }
+        .content { padding: 30px 20px; display: none; }
+        .content.active { display: block; }
+        h1 { font-size: 22px; color: #2c3e50; margin-top: 0; }
+        input[type="text"] { width: 80%; padding: 12px; margin-top: 15px; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-search { margin-top: 15px; padding: 12px 24px; font-size: 16px; color: white; background-color: #e74c3c; border: none; border-radius: 8px; cursor: pointer; }
+        .btn-search:hover { background-color: #c0392b; }
+        #search-result { margin-top: 30px; font-size: 18px; font-weight: bold; line-height: 1.6; }
+        #question-box { font-size: 32px; font-weight: bold; letter-spacing: 2px; margin: 20px 0; padding: 30px; background-color: #ecf0f1; border-radius: 8px; word-break: keep-all; }
+        
+        /* 都と区のボタンデザイン */
+        .btn-to, .btn-ku { width: 45%; padding: 15px; font-size: 26px; font-weight: bold; color: white; border: none; border-radius: 8px; cursor: pointer; margin: 10px 2%; }
+        .btn-to { background-color: #2980b9; } /* 都はブルー系 */
+        .btn-ku { background-color: #27ae60; } /* 区はグリーン系 */
+        .btn-to:hover, .btn-ku:hover { opacity: 0.8; }
+        
+        #quiz-result { margin-top: 20px; font-size: 22px; font-weight: bold; min-height: 90px; }
+        .btn-next { display: none; margin-top: 15px; padding: 10px 30px; font-size: 16px; background-color: #34495e; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .type-to { color: #2980b9; font-size: 26px; }
+        .type-ku { color: #27ae60; font-size: 26px; }
+        .furusato-box { margin-top: 25px; padding: 15px; background-color: #fff5f5; border: 1px dashed #e74c3c; border-radius: 8px; }
+        .furusato-btn { display: inline-block; margin-top: 10px; padding: 10px 20px; background-color: #e74c3c; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; font-weight: bold; }
+        .furusato-btn:hover { background-color: #c0392b; }
+        #streak-box { font-size: 18px; font-weight: bold; color: #2c3e50; margin-top: -10px; margin-bottom: 15px; padding: 10px; background-color: #fffacd; border-radius: 8px; display: inline-block; }
+        #streak-count { font-size: 26px; color: #e74c3c; }
+        .share-x-btn { display: inline-block; margin-top: 15px; padding: 10px 20px; background-color: #0f1419; color: white; text-decoration: none; border-radius: 5px; font-size: 14px; font-weight: bold; transition: opacity 0.2s; }
+        .share-x-btn:hover { opacity: 0.8; }
+        .article-text { text-align: left; font-size: 14px; line-height: 1.8; color: #444; }
+        .article-text h2 { font-size: 18px; color: #e74c3c; border-left: 4px solid #e74c3c; padding-left: 10px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('search')">🔍 検索</div>
+        <div class="tab" onclick="switchTab('quiz')">🎮 クイズ</div>
+        <div class="tab" onclick="switchTab('guide')">📖 豆知識</div>
+    </div>
+
+    <!-- 姉妹サイトへのリンク -->
+    <div style="text-align: center; margin: 15px 0;">
+        <a href="index.html" style="background-color: #27ae60; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-size: 14px; font-weight: bold;">
+            🗾 姉妹サイト「まちかちょうか」に戻る ＞
+        </a>
+    </div>
+
+    <!-- 検索タブ -->
+    <div id="tab-search" class="content active">
+        <h1 style="font-size: 22px; color: #2c3e50; margin-top: 0; margin-bottom: 5px;">
+            🗼 東京の施設「都か区か」検索
+        </h1>
+        <p>調べたい施設名を入力してください</p>
+        <!-- ▼ ここに「全50施設」を追記 ▼ -->
+        <p style="font-size: 12px; color: #666; margin-top:-10px;">現在、厳選した全50施設の「都か区か」を判定できます。</p>
+        <input type="text" id="searchInput" placeholder="例: 浅草公会堂、東京芸術劇場">
+        <button class="btn-search" onclick="searchFacility()">検索</button>
+        <div id="search-result"></div>
+    </div>
+
+    <!-- クイズタブ -->
+    <div id="tab-quiz" class="content">
+        <h1>🗼 TOKAKUKA クイズ</h1>
+        <!-- ▼ ここに「全50問」を追記し、目立たせました ▼ -->
+        <p style="margin-bottom: 5px;">この施設を運営しているのはどっち？</p>
+        <p style="font-size:14px; color:#e74c3c; font-weight:bold; margin-top: 0;">（被りなし・完全制覇まで全50問！）</p>
+        
+        <div id="streak-box">🔥 現在 <span id="streak-count">0</span> 問連続正解中！</div>
+        
+        <div id="question-box">準備中...</div>
+        <div>
+            <button class="btn-to" onclick="checkAnswer('都')">都</button>
+            <button class="btn-ku" onclick="checkAnswer('区')">区</button>
+        </div>
+        <div id="quiz-result"></div>
+        <button id="next-btn" class="btn-next" onclick="nextQuestion()">次の問題へ ＞</button>
+    </div>
+
+    <!-- 豆知識タブ -->
+    <div id="tab-guide" class="content article-text">
+        <h1 style="text-align: center;">当サイトについて</h1>
+        <h2>TOKAKUKA（都か区か）とは？</h2>
+        <p>東京都内には立派なホールや美術館、公園がたくさんありますが、「これって東京都が作ったの？それとも区が作ったの？」と気になって夜も眠れなくなったことはありませんか？</p>
+        <p>当サイトは、そんな疑問を瞬時に解決し、クイズ形式で東京の施設に詳しくなれるサイトです。</p>
+        
+        <h2>意外と引っかかる施設たち</h2>
+        <p>例えば「浅草公会堂」は台東<strong>区</strong>の施設ですが、「東京芸術劇場」は<strong>都</strong>の施設です。名前に「東京」とついていても区の施設だったり、その逆もあったりと、非常に奥が深いです。</p>
+    </div>
+</div>
+<script>
+    // ▼▼▼ 施設のデータ（追加・修正可能です） ▼▼▼
+    const facilityData = [
+        // 既存の20件
+        { name: "東京芸術劇場", yomi: "とうきょうげいじゅつげきじょう", type: "都", ward: "豊島区" },
+        { name: "浅草公会堂", yomi: "あさくさこうかいどう", type: "区", ward: "台東区" },
+        { name: "練馬文化センター", yomi: "ねりまぶんかせんたー", type: "区", ward: "練馬区" },
+        { name: "東京体育館", yomi: "とうきょうたいいくかん", type: "都", ward: "渋谷区" },
+        { name: "東京武道館", yomi: "とうきょうぶどうかん", type: "都", ward: "足立区" },
+        { name: "文京シビックホール", yomi: "ぶんきょうしびっくほーる", type: "区", ward: "文京区" },
+        { name: "杉並公会堂", yomi: "すぎなみこうかいどう", type: "区", ward: "杉並区" },
+        { name: "なかのZERO", yomi: "なかのぜろ", type: "区", ward: "中野区" },
+        { name: "東京都現代美術館", yomi: "とうきょうとげんだいびじゅつかん", type: "都", ward: "江東区" },
+        { name: "東京都美術館", yomi: "とうきょうとびじゅつかん", type: "都", ward: "台東区" },
+        { name: "めぐろパーシモンホール", yomi: "めぐろぱーしもんほーる", type: "区", ward: "目黒区" },
+        { name: "ティアラこうとう", yomi: "てぃあらこうとう", type: "区", ward: "江東区" },
+        { name: "葛西臨海水族園", yomi: "かさいりんかいすいぞくえん", type: "都", ward: "江戸川区" },
+        { name: "恩賜上野動物園", yomi: "おんしうえのどうぶつえん", type: "都", ward: "台東区" },
+        { name: "新宿文化センター", yomi: "しんじゅくぶんかせんたー", type: "区", ward: "新宿区" },
+        { name: "北とぴあ", yomi: "ほくとぴあ", type: "区", ward: "北区" },
+        { name: "かつしかシンフォニーヒルズ", yomi: "かつしかしんふぉにーひるず", type: "区", ward: "葛飾区" },
+        { name: "東京都庭園美術館", yomi: "とうきょうとていえんびじゅつかん", type: "都", ward: "港区" },
+        { name: "江戸東京博物館", yomi: "えどとうきょうはくぶつかん", type: "都", ward: "墨田区" },
+        { name: "すみだトリフォニーホール", yomi: "すみだとりふぉにーほーる", type: "区", ward: "墨田区" },
+        
+        // ▼ 追加分30件 ▼
+        { name: "東京都写真美術館", yomi: "とうきょうとしゃしんびじゅつかん", type: "都", ward: "目黒区" }, 
+        { name: "世田谷美術館", yomi: "せたがやびじゅつかん", type: "区", ward: "世田谷区" },
+        { name: "代々木公園", yomi: "よよぎこうえん", type: "都", ward: "渋谷区" },
+        { name: "しながわ水族館", yomi: "しながわすいぞくかん", type: "区", ward: "品川区" }, // サンシャインなどは民間ですが、ここは品川区立の強烈な引っかけです
+        { name: "日比谷公園", yomi: "ひびやこうえん", type: "都", ward: "千代田区" },
+        { name: "日比谷図書文化館", yomi: "ひびやとしょぶんかかん", type: "区", ward: "千代田区" }, // 日比谷公園内にあるのに「千代田区立」という罠
+        { name: "上野恩賜公園", yomi: "うえのおんしこうえん", type: "都", ward: "台東区" },
+        { name: "渋谷公会堂（LINE CUBE）", yomi: "しぶやこうかいどう", type: "区", ward: "渋谷区" },
+        { name: "夢の島公園", yomi: "ゆめのしまこうえん", type: "都", ward: "江東区" },
+        { name: "江戸川区総合文化センター", yomi: "えどがわくそうごうぶんかせんたー", type: "区", ward: "江戸川区" },
+        { name: "葛西臨海公園", yomi: "かさいりんかいこうえん", type: "都", ward: "江戸川区" },
+        { name: "大田区民ホール・アプリコ", yomi: "おおたくみんほーるあぷりこ", type: "区", ward: "大田区" },
+        { name: "東京都立中央図書館", yomi: "とうきょうとりつちゅうおうとしょかん", type: "都", ward: "港区" },
+        { name: "練馬区立美術館", yomi: "ねりまくりつびじゅつかん", type: "区", ward: "練馬区" },
+        { name: "駒沢オリンピック公園", yomi: "こまざわおりんぴっくこうえん", type: "都", ward: "世田谷区" },
+        { name: "トキワ荘マンガミュージアム", yomi: "ときわそうまんがみゅーじあむ", type: "区", ward: "豊島区" },
+        { name: "東京都慰霊堂", yomi: "とうきょうといれいどう", type: "都", ward: "墨田区" },
+        { name: "新宿歴史博物館", yomi: "しんじゅくれきしはくぶつかん", type: "区", ward: "新宿区" },
+        { name: "清澄庭園", yomi: "きよすみていえん", type: "都", ward: "江東区" },
+        { name: "目黒区美術館", yomi: "めぐろくびじゅつかん", type: "区", ward: "目黒区" },
+        { name: "浜離宮恩賜庭園", yomi: "はまりきゅうおんしていえん", type: "都", ward: "中央区" },
+        { name: "板橋区立美術館", yomi: "いたばしくりつびじゅつかん", type: "区", ward: "板橋区" },
+        { name: "旧芝離宮恩賜庭園", yomi: "きゅうしばりきゅうおんしていえん", type: "都", ward: "港区" },
+        { name: "港区立郷土歴史館", yomi: "みなとくりつきょうどれきしかん", type: "区", ward: "港区" },
+        { name: "東京都水の科学館", yomi: "とうきょうとみずのかがくかん", type: "都", ward: "江東区" },
+        { name: "品川区総合区民会館（きゅりあん）", yomi: "しながわくそうごうくみんかいかん", type: "区", ward: "品川区" },
+        { name: "日暮里サニーホール", yomi: "にっぽりさにーほーる", type: "区", ward: "荒川区" },
+        { name: "世田谷文学館", yomi: "せたがやぶんがくかん", type: "区", ward: "世田谷区" },
+        { name: "朝倉彫塑館", yomi: "あさくらちょうそかん", type: "区", ward: "台東区" },
+        { name: "葛飾区郷土と天文の博物館", yomi: "かつしかくきょうどとてんもんのはくぶつかん", type: "区", ward: "葛飾区" }
+    ];
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+        
+        if(tabId === 'search') {
+            document.querySelectorAll('.tab')[0].classList.add('active');
+            document.getElementById('tab-search').classList.add('active');
+        } else if (tabId === 'quiz') {
+            document.querySelectorAll('.tab')[1].classList.add('active');
+            document.getElementById('tab-quiz').classList.add('active');
+            if (!currentFacility) nextQuestion();
+        } else if (tabId === 'guide') {
+            document.querySelectorAll('.tab')[2].classList.add('active');
+            document.getElementById('tab-guide').classList.add('active');
+        }
+    }
+
+    function searchFacility() {
+        const input = document.getElementById("searchInput").value.trim();
+        const resultDiv = document.getElementById("search-result");
+        
+        if (!input) {
+            resultDiv.innerHTML = "施設名を入力してください🤔";
+            return;
+        }
+
+        let found = facilityData.find(f => f.name.includes(input) || f.yomi.includes(input));
+
+        if (found) {
+            const colorClass = found.type === "都" ? "type-to" : "type-ku";
+            // アフィリエイトは一旦「楽天トラベルで周辺のホテルを探す」等に変更
+            const baseSearchUrl = "https://search.rakuten.co.jp/search/mall/" + encodeURIComponent(found.name + " 観光");
+            const affiliateUrl = "https://hb.afl.rakuten.co.jp/hgc/55a28941.7537c1f8.55a28942.ef875bbb/?pc=" + encodeURIComponent(baseSearchUrl);
+            
+            resultDiv.innerHTML = `
+                ${found.name} は…<br>「<span class="${colorClass}">${found.type}</span>」の施設です！<br>
+                <span style="font-size:14px; color:#666;">（所在地：${found.ward}）</span>
+                <div class="furusato-box">
+                    <p style="font-size:14px; margin:0; color:#c0392b;">🏨 周辺に遊びに行こう！</p>
+                    <a href="${affiliateUrl}" target="_blank" class="furusato-btn">
+                        ${found.name} 周辺の観光・ホテル情報
+                    </a>
+                </div>
+            `;
+        } else {
+            resultDiv.innerHTML = '見つかりませんでした😢<br><span style="font-size:14px; font-weight:normal;">国や民間の施設、または未登録の可能性があります。</span>';
+        }
+    }
+
+    let currentFacility = null;
+    let currentStreak = 0;
+    let hasAnswered = false;
+    let unusedFacilities = []; 
+
+    function nextQuestion() {
+        hasAnswered = false; 
+
+        if (unusedFacilities.length === 0) {
+            unusedFacilities = [...facilityData];
+        }
+
+        const randomIndex = Math.floor(Math.random() * unusedFacilities.length);
+        currentFacility = unusedFacilities[randomIndex]; 
+
+        unusedFacilities.splice(randomIndex, 1);
+
+        document.getElementById("question-box").innerText = currentFacility.name;
+        document.getElementById("quiz-result").innerText = "";
+        document.getElementById("next-btn").style.display = "none";
+        const shareContainer = document.getElementById("share-btn-container");
+        if (shareContainer) shareContainer.remove();
+    }
+
+    function checkAnswer(selectedType) {
+        if (!currentFacility) return;
+        if (hasAnswered) return;
+        
+        hasAnswered = true; 
+
+        const resultMsg = document.getElementById("quiz-result");
+        const baseSearchUrl = "https://search.rakuten.co.jp/search/mall/" + encodeURIComponent(currentFacility.name + " 観光");
+        const affiliateUrl = "https://hb.afl.rakuten.co.jp/hgc/55a28941.7537c1f8.55a28942.ef875bbb/?pc=" + encodeURIComponent(baseSearchUrl);
+        
+        let isCorrect = (selectedType === currentFacility.type);
+        let previousStreak = currentStreak;
+
+        if (isCorrect) {
+            currentStreak++;
+            
+            if (currentStreak >= facilityData.length) {
+                resultMsg.innerHTML = `🎉 完全制覇！！！<br><span style="font-size:16px; font-weight:normal;">全 ${facilityData.length} 件を正解！あなたは真のTOKAKUKAマスターです👑</span>`;
+                resultMsg.style.color = "#f39c12"; 
+            } else {
+                resultMsg.innerHTML = `⭕ 正解！<br><span style="font-size:16px; font-weight:normal;">（${currentFacility.type}立 / ${currentFacility.ward}）</span>`;
+                resultMsg.style.color = "#e74c3c";
+            }
+        } else {
+            currentStreak = 0;
+            unusedFacilities = []; 
+            resultMsg.innerHTML = `❌ 残念！正解は「${currentFacility.type}」<br><span style="font-size:16px; font-weight:normal;">（${currentFacility.type}立 / ${currentFacility.ward}）</span>`;
+            resultMsg.style.color = "#34495e";
+        }
+
+        document.getElementById("streak-count").innerText = currentStreak;
+
+        let shareText = "";
+        if (isCorrect) {
+            shareText = `【TOKAKUKAクイズ】${currentStreak}問連続正解中🔥\n「${currentFacility.name}」は『${currentFacility.type}』の施設！\nあなたは何問連続で当てられる？👇\n`;
+        } else {
+            shareText = `【TOKAKUKAクイズ】「${currentFacility.name}」は都？区？\n引っかけ問題にやられた😇 あなたも挑戦してみて！👇\n`;
+        }
+        
+        const siteUrl = "https://あなたの新しいドメイン等"; 
+        const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(siteUrl)}&hashtags=TOKAKUKA,都か区か`;
+
+        resultMsg.innerHTML += `
+            <div id="share-btn-container" style="margin-top: 15px;">
+                <a href="${xShareUrl}" target="_blank" class="share-x-btn">
+                    𝕏 で結果をシェアする
+                </a>
+            </div>
+        `;
+        document.getElementById("next-btn").style.display = "inline-block";
+    }
+</script>
+</body>
+</html>
