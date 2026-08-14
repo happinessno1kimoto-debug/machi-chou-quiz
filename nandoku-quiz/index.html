@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>難読自治体名クイズ 100問──あなたはいくつ読める？｜全国町名サーチ</title>
+<meta name="description" content="増毛町、音威子府村、四條畷市、北谷町……全国の難読な市区町村名100問。読み方をひらがなで入力して答え合わせ。あなたはいくつ読めるか挑戦してみてください。">
+<link rel="canonical" href="https://machi-chou-quiz.com/nandoku-quiz/">
+<meta property="og:title" content="難読自治体名クイズ 100問──あなたはいくつ読める？"><meta property="og:type" content="website">
+<meta name="google-adsense-account" content="ca-pub-7252507673212109">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7252507673212109" crossorigin="anonymous"></script>
+<style>
+:root{--blue:#3498db;--ink:#2c3e50}
+*{box-sizing:border-box}
+body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;color:var(--ink);line-height:1.8;margin:0;background:#f0f4f8}
+.wrap{max-width:640px;margin:0 auto;background:#fff;padding:24px 20px 48px;min-height:100vh}
+nav.bc{font-size:12px;color:#7a8a99;margin-bottom:12px}nav.bc a{color:#7a8a99}
+h1{font-size:22px;margin:4px 0 10px;text-align:center}
+.intro{font-size:14px;color:#555;margin:0 0 20px}
+.progress{text-align:center;font-size:13px;color:#7a8a99;margin-bottom:8px}
+.bar{height:6px;background:#e7edf2;border-radius:99px;overflow:hidden;margin-bottom:18px}
+.bar>i{display:block;height:100%;background:var(--blue);width:0;transition:.3s}
+.card{border:1px solid #e3e9ef;border-radius:16px;padding:30px 20px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+.q{font-size:15px;color:#8a97a3;margin-bottom:6px}
+.kanji{font-size:44px;font-weight:bold;letter-spacing:2px;margin:6px 0 4px}
+.type{font-size:13px;color:#aab;margin-bottom:14px}
+.inp{width:100%;max-width:300px;font-size:20px;text-align:center;padding:11px 10px;border:2px solid #cfe0f0;border-radius:10px;outline:none}
+.inp:focus{border-color:var(--blue)}
+.btn{display:inline-block;border:none;border-radius:12px;padding:12px 20px;font-size:15px;font-weight:bold;cursor:pointer;margin:6px 4px}
+.btn.main{background:var(--blue);color:#fff;width:100%;max-width:300px}
+.btn.sub{background:#eef2f5;color:#667}
+.btn.next{background:var(--blue);color:#fff;width:100%;max-width:300px}
+.fb{min-height:78px;margin-top:14px}
+.fb .mark{font-size:30px;font-weight:bold}
+.fb.correct .mark{color:#1e874b}.fb.wrong .mark{color:#c0392b}
+.fb .yomi{font-size:24px;color:var(--blue);font-weight:bold}
+.fb .loc{font-size:13px;color:#666;margin-top:2px}
+.hidden{display:none}
+.controls{text-align:center;margin-top:14px}
+.result{text-align:center;padding:30px 10px}
+.result .score{font-size:40px;font-weight:bold;color:var(--blue)}
+.adslot{margin:24px 0;min-height:100px;border:1px dashed #ccd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#aab;font-size:12px}
+.backlinks{font-size:13px;margin-top:26px;text-align:center}.backlinks a{color:var(--blue);margin:0 8px}
+.note{font-size:12px;color:#8a97a3;margin-top:20px}
+</style></head><body><div class="wrap">
+<nav class="bc"><a href="/">トップ</a> › 難読自治体名クイズ</nav>
+<h1>🗾 難読自治体名クイズ 100問</h1>
+<p class="intro">全国の「読めそうで読めない」市区町村名を100問集めました。読み方を<b>ひらがな</b>で入力して答え合わせ。多少の表記ゆれは正解になります。あなたはいくつ読めるでしょうか？</p>
+
+<div id="game">
+<div class="progress"><span id="count">第1問 / 100</span></div>
+<div class="bar"><i id="prog"></i></div>
+<div class="card">
+<div class="q">なんて読む？</div>
+<div class="kanji" id="kanji">－</div>
+<div class="type" id="type"></div>
+<input class="inp" id="inp" type="text" inputmode="kana" autocomplete="off" placeholder="ひらがなで入力" onkeydown="if(event.key==='Enter')check()">
+<div class="fb hidden" id="fb"><div class="mark" id="mark"></div><div class="yomi" id="yomi"></div><div class="loc" id="loc"></div></div>
+</div>
+<div class="controls">
+<div id="answerCtrl">
+<button class="btn main" onclick="check()">こたえる</button><br>
+<button class="btn sub" onclick="giveup()">わからない（答えを見る）</button>
+</div>
+<div id="nextCtrl" class="hidden">
+<button class="btn next" onclick="next()">次の問題へ ＞</button>
+</div>
+</div>
+</div>
+
+<div id="result" class="result hidden">
+<p>100問おつかれさまでした！</p>
+<div class="score"><span id="scoreNum">0</span> / 100</div>
+<p id="rank" style="font-weight:bold;margin-top:6px"></p>
+<button class="btn main" onclick="start()" style="margin-top:14px">もう一度挑戦する</button>
+</div>
+
+<div class="adslot">広告</div>
+<div class="backlinks"><a href="/">町名検索・クイズ トップ</a>・<a href="/columns/">コラム一覧</a></div>
+<p class="note">※読み方は総務省「全国地方公共団体コード」に基づきます。市町村合併等により変わる場合があります。</p>
+</div>
+
+<script>
+const DATA=[{"k":"増毛町","y":"ましけ","p":"北海道","t":"町","f":"ましけちょう"},{"k":"妹背牛町","y":"もせうし","p":"北海道","t":"町","f":"もせうしちょう"},{"k":"音威子府村","y":"おといねっぷ","p":"北海道","t":"村","f":"おといねっぷむら"},{"k":"弟子屈町","y":"てしかが","p":"北海道","t":"町","f":"てしかがちょう"},{"k":"神恵内村","y":"かもえない","p":"北海道","t":"村","f":"かもえないむら"},{"k":"占冠村","y":"しむかっぷ","p":"北海道","t":"村","f":"しむかっぷむら"},{"k":"幌加内町","y":"ほろかない","p":"北海道","t":"町","f":"ほろかないちょう"},{"k":"秩父別町","y":"ちっぷべつ","p":"北海道","t":"町","f":"ちっぷべつちょう"},{"k":"訓子府町","y":"くんねっぷ","p":"北海道","t":"町","f":"くんねっぷちょう"},{"k":"長万部町","y":"おしゃまんべ","p":"北海道","t":"町","f":"おしゃまんべちょう"},{"k":"倶知安町","y":"くっちゃん","p":"北海道","t":"町","f":"くっちゃんちょう"},{"k":"比布町","y":"ぴっぷ","p":"北海道","t":"町","f":"ぴっぷちょう"},{"k":"標茶町","y":"しべちゃ","p":"北海道","t":"町","f":"しべちゃちょう"},{"k":"苫前町","y":"とままえ","p":"北海道","t":"町","f":"とままえちょう"},{"k":"六ヶ所村","y":"ろっかしょ","p":"青森県","t":"村","f":"ろっかしょむら"},{"k":"大衡村","y":"おおひら","p":"宮城県","t":"村","f":"おおひらむら"},{"k":"女川町","y":"おながわ","p":"宮城県","t":"町","f":"おながわちょう"},{"k":"七ヶ宿町","y":"しちかしゅく","p":"宮城県","t":"町","f":"しちかしゅくまち"},{"k":"三種町","y":"みたね","p":"秋田県","t":"町","f":"みたねちょう"},{"k":"遊佐町","y":"ゆざ","p":"山形県","t":"町","f":"ゆざまち"},{"k":"匝瑳市","y":"そうさ","p":"千葉県","t":"市","f":"そうさし"},{"k":"我孫子市","y":"あびこ","p":"千葉県","t":"市","f":"あびこし"},{"k":"上三川町","y":"かみのかわ","p":"栃木県","t":"町","f":"かみのかわまち"},{"k":"邑楽町","y":"おうら","p":"群馬県","t":"町","f":"おうらまち"},{"k":"甘楽町","y":"かんら","p":"群馬県","t":"町","f":"かんらまち"},{"k":"五霞町","y":"ごか","p":"茨城県","t":"町","f":"ごかまち"},{"k":"大網白里市","y":"おおあみしらさと","p":"千葉県","t":"市","f":"おおあみしらさとし"},{"k":"各務原市","y":"かかみがはら","p":"岐阜県","t":"市","f":"かかみがはらし"},{"k":"可児市","y":"かに","p":"岐阜県","t":"市","f":"かにし"},{"k":"御嵩町","y":"みたけ","p":"岐阜県","t":"町","f":"みたけちょう"},{"k":"揖斐川町","y":"いびがわ","p":"岐阜県","t":"町","f":"いびがわちょう"},{"k":"喬木村","y":"たかぎ","p":"長野県","t":"村","f":"たかぎむら"},{"k":"売木村","y":"うるぎ","p":"長野県","t":"村","f":"うるぎむら"},{"k":"阿智村","y":"あち","p":"長野県","t":"村","f":"あちむら"},{"k":"神津島村","y":"こうづしま","p":"東京都","t":"村","f":"こうづしまむら"},{"k":"青ヶ島村","y":"あおがしま","p":"東京都","t":"村","f":"あおがしまむら"},{"k":"四條畷市","y":"しじょうなわて","p":"大阪府","t":"市","f":"しじょうなわてし"},{"k":"交野市","y":"かたの","p":"大阪府","t":"市","f":"かたのし"},{"k":"枚方市","y":"ひらかた","p":"大阪府","t":"市","f":"ひらかたし"},{"k":"河内長野市","y":"かわちながの","p":"大阪府","t":"市","f":"かわちながのし"},{"k":"斑鳩町","y":"いかるが","p":"奈良県","t":"町","f":"いかるがちょう"},{"k":"田原本町","y":"たわらもと","p":"奈良県","t":"町","f":"たわらもとちょう"},{"k":"明日香村","y":"あすか","p":"奈良県","t":"村","f":"あすかむら"},{"k":"十津川村","y":"とつかわ","p":"奈良県","t":"村","f":"とつかわむら"},{"k":"御所市","y":"ごせ","p":"奈良県","t":"市","f":"ごせし"},{"k":"宇陀市","y":"うだ","p":"奈良県","t":"市","f":"うだし"},{"k":"江府町","y":"こうふ","p":"鳥取県","t":"町","f":"こうふちょう"},{"k":"邑南町","y":"おおなん","p":"島根県","t":"町","f":"おおなんちょう"},{"k":"宿毛市","y":"すくも","p":"高知県","t":"市","f":"すくもし"},{"k":"三次市","y":"みよし","p":"広島県","t":"市","f":"みよしし"},{"k":"安芸太田町","y":"あきおおた","p":"広島県","t":"町","f":"あきおおたちょう"},{"k":"北谷町","y":"ちゃたん","p":"沖縄県","t":"町","f":"ちゃたんちょう"},{"k":"中城村","y":"なかぐすく","p":"沖縄県","t":"村","f":"なかぐすくそん"},{"k":"北中城村","y":"きたなかぐすく","p":"沖縄県","t":"村","f":"きたなかぐすくそん"},{"k":"今帰仁村","y":"なきじん","p":"沖縄県","t":"村","f":"なきじんそん"},{"k":"南風原町","y":"はえばる","p":"沖縄県","t":"町","f":"はえばるちょう"},{"k":"宜野座村","y":"ぎのざ","p":"沖縄県","t":"村","f":"ぎのざそん"},{"k":"恩納村","y":"おんな","p":"沖縄県","t":"村","f":"おんなそん"},{"k":"読谷村","y":"よみたん","p":"沖縄県","t":"村","f":"よみたんそん"},{"k":"竹富町","y":"たけとみ","p":"沖縄県","t":"町","f":"たけとみちょう"},{"k":"与那国町","y":"よなぐに","p":"沖縄県","t":"町","f":"よなぐにちょう"},{"k":"金武町","y":"きん","p":"沖縄県","t":"町","f":"きんちょう"},{"k":"直方市","y":"のおがた","p":"福岡県","t":"市","f":"のおがたし"},{"k":"遠賀町","y":"おんが","p":"福岡県","t":"町","f":"おんがちょう"},{"k":"鞍手町","y":"くらて","p":"福岡県","t":"町","f":"くらてまち"},{"k":"篠栗町","y":"ささぐり","p":"福岡県","t":"町","f":"ささぐりまち"},{"k":"玖珠町","y":"くす","p":"大分県","t":"町","f":"くすまち"},{"k":"杵築市","y":"きつき","p":"大分県","t":"市","f":"きつきし"},{"k":"姶良市","y":"あいら","p":"鹿児島県","t":"市","f":"あいらし"},{"k":"曽於市","y":"そお","p":"鹿児島県","t":"市","f":"そおし"},{"k":"添田町","y":"そえだ","p":"福岡県","t":"町","f":"そえだまち"},{"k":"香春町","y":"かわら","p":"福岡県","t":"町","f":"かわらまち"},{"k":"養父市","y":"やぶ","p":"兵庫県","t":"市","f":"やぶし"},{"k":"上北山村","y":"かみきたやま","p":"奈良県","t":"村","f":"かみきたやまむら"},{"k":"下北山村","y":"しもきたやま","p":"奈良県","t":"村","f":"しもきたやまむら"},{"k":"東吉野村","y":"ひがしよしの","p":"奈良県","t":"村","f":"ひがしよしのむら"},{"k":"曽爾村","y":"そに","p":"奈良県","t":"村","f":"そにむら"},{"k":"御杖村","y":"みつえ","p":"奈良県","t":"村","f":"みつえむら"},{"k":"南牧村","y":"なんもく","p":"群馬県","t":"村","f":"なんもくむら"},{"k":"嬬恋村","y":"つまごい","p":"群馬県","t":"村","f":"つまごいむら"},{"k":"木祖村","y":"きそ","p":"長野県","t":"村","f":"きそむら"},{"k":"平谷村","y":"ひらや","p":"長野県","t":"村","f":"ひらやむら"},{"k":"根羽村","y":"ねば","p":"長野県","t":"村","f":"ねばむら"},{"k":"海士町","y":"あま","p":"島根県","t":"町","f":"あまちょう"},{"k":"知夫村","y":"ちぶ","p":"島根県","t":"村","f":"ちぶむら"},{"k":"田舎館村","y":"いなかだて","p":"青森県","t":"村","f":"いなかだてむら"},{"k":"蓬田村","y":"よもぎた","p":"青森県","t":"村","f":"よもぎたむら"},{"k":"大鰐町","y":"おおわに","p":"青森県","t":"町","f":"おおわにまち"},{"k":"最上町","y":"もがみ","p":"山形県","t":"町","f":"もがみまち"},{"k":"桂川町","y":"けいせん","p":"福岡県","t":"町","f":"けいせんまち"},{"k":"苅田町","y":"かんだ","p":"福岡県","t":"町","f":"かんだまち"},{"k":"国東市","y":"くにさき","p":"大分県","t":"市","f":"くにさきし"},{"k":"日出町","y":"ひじ","p":"大分県","t":"町","f":"ひじまち"},{"k":"指宿市","y":"いぶすき","p":"鹿児島県","t":"市","f":"いぶすきし"},{"k":"枕崎市","y":"まくらざき","p":"鹿児島県","t":"市","f":"まくらざきし"},{"k":"志布志市","y":"しぶし","p":"鹿児島県","t":"市","f":"しぶしし"},{"k":"豊見城市","y":"とみぐすく","p":"沖縄県","t":"市","f":"とみぐすくし"},{"k":"八重瀬町","y":"やえせ","p":"沖縄県","t":"町","f":"やえせちょう"},{"k":"鹿角市","y":"かづの","p":"秋田県","t":"市","f":"かづのし"},{"k":"廿日市市","y":"はつかいち","p":"広島県","t":"市","f":"はつかいちし"}];
+let order=[],idx=0,score=0,answered=false;
+// ゆるい判定用の正規化：カタカナ→ひらがな、大小仮名の統一、長音・記号・空白の除去
+function norm(s){
+  if(!s)return "";
+  s=s.trim().toLowerCase();
+  s=s.replace(/[\u30a1-\u30f6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60)); // カナ→かな
+  const sm={"ぁ":"あ","ぃ":"い","ぅ":"う","ぇ":"え","ぉ":"お","ゃ":"や","ゅ":"ゆ","ょ":"よ","っ":"つ","ゎ":"わ","ゕ":"か","ゖ":"け"};
+  s=s.replace(/[ぁぃぅぇぉゃゅょっゎゕゖ]/g,c=>sm[c]); // 小書き→大書きに統一
+  s=s.replace(/[ー\-\s―–、。・]/g,""); // 長音・記号・空白除去
+  s=s.replace(/[ぢ]/g,"じ").replace(/[づ]/g,"ず"); // ぢ/づ の揺れ吸収
+  return s;
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function start(){
+  order=shuffle([...Array(DATA.length).keys()]);idx=0;score=0;
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  render();
+}
+function render(){
+  answered=false;
+  const d=DATA[order[idx]];
+  document.getElementById('kanji').textContent=d.k;
+  document.getElementById('type').textContent='（'+d.p+'の'+d.t+'）';
+  const inp=document.getElementById('inp');inp.value='';inp.disabled=false;
+  document.getElementById('fb').className='fb hidden';
+  document.getElementById('answerCtrl').classList.remove('hidden');
+  document.getElementById('nextCtrl').classList.add('hidden');
+  document.getElementById('count').textContent='第'+(idx+1)+'問 / '+DATA.length;
+  document.getElementById('prog').style.width=(idx/DATA.length*100)+'%';
+  inp.focus();
+}
+function showFb(ok,d){
+  answered=true;
+  document.getElementById('inp').disabled=true;
+  const fb=document.getElementById('fb');fb.className='fb '+(ok?'correct':'wrong');
+  document.getElementById('mark').textContent=ok?'◯ 正解！':'✕ 残念…';
+  document.getElementById('yomi').textContent=d.f;
+  document.getElementById('loc').textContent=d.k+'（'+d.p+'）';
+  document.getElementById('answerCtrl').classList.add('hidden');
+  document.getElementById('nextCtrl').classList.remove('hidden');
+}
+function check(){
+  if(answered)return;
+  const d=DATA[order[idx]];
+  const inp=norm(document.getElementById('inp').value);
+  // 種別なしの読み(d.y)でも、種別まで付けた読みでも正解にする
+  const suf={"市":"し","区":"く","町":["まち","ちょう"],"村":["むら","そん"]};
+  let accepts=[norm(d.y)];
+  const s=suf[d.t];
+  if(s){(Array.isArray(s)?s:[s]).forEach(x=>accepts.push(norm(d.y+x)));}
+  const ok=accepts.includes(inp);
+  if(ok)score++;
+  showFb(ok,d);
+}
+function giveup(){if(answered)return;showFb(false,DATA[order[idx]]);}
+function next(){idx++;if(idx>=DATA.length)finish();else render();}
+function finish(){
+  document.getElementById('game').classList.add('hidden');
+  const r=document.getElementById('result');r.classList.remove('hidden');
+  document.getElementById('scoreNum').textContent=score;
+  let rank;const p=score;
+  if(p>=90)rank='🏆 難読マスター！';else if(p>=70)rank='🎉 かなりの地名通！';
+  else if(p>=40)rank='👍 なかなかの実力！';else rank='📖 これを機に覚えよう！';
+  document.getElementById('rank').textContent=rank;
+}
+start();
+</script>
+</body></html>
