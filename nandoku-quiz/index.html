@@ -33,6 +33,19 @@ h1{font-size:22px;margin:4px 0 10px;text-align:center}
 .fb.correct .mark{color:#1e874b}.fb.wrong .mark{color:#c0392b}
 .fb .yomi{font-size:24px;color:var(--blue);font-weight:bold}
 .fb .loc{font-size:13px;color:#666;margin-top:2px}
+.furusato{display:inline-block;margin-top:12px;background:#e74c3c;color:#fff!important;text-decoration:none;font-weight:bold;padding:9px 16px;border-radius:9px;font-size:13px}
+.furusato:hover{background:#d84437}
+.fb .pr{font-size:10px;color:#aab;margin-top:4px}
+.rcard{border:1px solid #e3e9ef;border-radius:16px;padding:30px 20px;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.rtitle{font-size:16px;font-weight:bold;margin-bottom:14px}
+.rscore{font-size:16px;color:#8a97a3}
+.rscore #scoreNum{font-size:52px;font-weight:bold;color:var(--blue)}
+.rslash{font-size:22px;color:#aab}.runit{font-size:15px;color:#667;margin-left:2px}
+.rrank{font-size:20px;font-weight:bold;margin:12px 0 6px}
+.rmsg{font-size:13px;color:#666;margin-bottom:18px}
+.btn.x{display:block;background:#111;color:#fff;text-decoration:none;max-width:300px;margin:0 auto}
+.btn.x:hover{background:#333}
+.rlinks{font-size:13px;margin-top:16px}.rlinks a{color:var(--blue);margin:0 6px}
 .hidden{display:none}
 .controls{text-align:center;margin-top:14px}
 .result{text-align:center;padding:30px 10px}
@@ -53,7 +66,7 @@ h1{font-size:22px;margin:4px 0 10px;text-align:center}
 <div class="kanji" id="kanji">－</div>
 <div class="type" id="type"></div>
 <input class="inp" id="inp" type="text" inputmode="kana" autocomplete="off" placeholder="ひらがなで入力" onkeydown="if(event.key==='Enter')check()">
-<div class="fb hidden" id="fb"><div class="mark" id="mark"></div><div class="yomi" id="yomi"></div><div class="loc" id="loc"></div></div>
+<div class="fb hidden" id="fb"><div class="mark" id="mark"></div><div class="yomi" id="yomi"></div><div class="loc" id="loc"></div><a class="furusato" id="furusato" target="_blank" rel="nofollow sponsored noopener"></a><div class="pr">[PR]</div></div>
 </div>
 <div class="controls">
 <div id="answerCtrl">
@@ -67,10 +80,15 @@ h1{font-size:22px;margin:4px 0 10px;text-align:center}
 </div>
 
 <div id="result" class="result hidden">
-<p>100問おつかれさまでした！</p>
-<div class="score"><span id="scoreNum">0</span> / 100</div>
-<p id="rank" style="font-weight:bold;margin-top:6px"></p>
-<button class="btn main" onclick="start()" style="margin-top:14px">もう一度挑戦する</button>
+<div class="rcard">
+<div class="rtitle">🗾 100問クリア！おつかれさまでした</div>
+<div class="rscore"><span id="scoreNum">0</span><span class="rslash"> / 100</span><span class="runit"> 問正解</span></div>
+<div class="rrank" id="rank"></div>
+<div class="rmsg" id="rmsg"></div>
+<a class="btn x" id="shareX" target="_blank" rel="noopener">𝕏 結果をシェアする</a>
+<button class="btn main" onclick="start()" style="margin-top:10px">もう一度挑戦する</button>
+<div class="rlinks"><a href="/">町名検索・クイズ トップ</a>・<a href="/columns/">コラム</a></div>
+</div>
 </div>
 
 <div class="adslot">広告</div>
@@ -81,6 +99,7 @@ h1{font-size:22px;margin:4px 0 10px;text-align:center}
 <script>
 const DATA=[{"k":"増毛町","y":"ましけ","p":"北海道","t":"町","f":"ましけちょう"},{"k":"妹背牛町","y":"もせうし","p":"北海道","t":"町","f":"もせうしちょう"},{"k":"音威子府村","y":"おといねっぷ","p":"北海道","t":"村","f":"おといねっぷむら"},{"k":"弟子屈町","y":"てしかが","p":"北海道","t":"町","f":"てしかがちょう"},{"k":"神恵内村","y":"かもえない","p":"北海道","t":"村","f":"かもえないむら"},{"k":"占冠村","y":"しむかっぷ","p":"北海道","t":"村","f":"しむかっぷむら"},{"k":"幌加内町","y":"ほろかない","p":"北海道","t":"町","f":"ほろかないちょう"},{"k":"秩父別町","y":"ちっぷべつ","p":"北海道","t":"町","f":"ちっぷべつちょう"},{"k":"訓子府町","y":"くんねっぷ","p":"北海道","t":"町","f":"くんねっぷちょう"},{"k":"長万部町","y":"おしゃまんべ","p":"北海道","t":"町","f":"おしゃまんべちょう"},{"k":"倶知安町","y":"くっちゃん","p":"北海道","t":"町","f":"くっちゃんちょう"},{"k":"比布町","y":"ぴっぷ","p":"北海道","t":"町","f":"ぴっぷちょう"},{"k":"標茶町","y":"しべちゃ","p":"北海道","t":"町","f":"しべちゃちょう"},{"k":"苫前町","y":"とままえ","p":"北海道","t":"町","f":"とままえちょう"},{"k":"六ヶ所村","y":"ろっかしょ","p":"青森県","t":"村","f":"ろっかしょむら"},{"k":"大衡村","y":"おおひら","p":"宮城県","t":"村","f":"おおひらむら"},{"k":"女川町","y":"おながわ","p":"宮城県","t":"町","f":"おながわちょう"},{"k":"七ヶ宿町","y":"しちかしゅく","p":"宮城県","t":"町","f":"しちかしゅくまち"},{"k":"三種町","y":"みたね","p":"秋田県","t":"町","f":"みたねちょう"},{"k":"遊佐町","y":"ゆざ","p":"山形県","t":"町","f":"ゆざまち"},{"k":"匝瑳市","y":"そうさ","p":"千葉県","t":"市","f":"そうさし"},{"k":"我孫子市","y":"あびこ","p":"千葉県","t":"市","f":"あびこし"},{"k":"上三川町","y":"かみのかわ","p":"栃木県","t":"町","f":"かみのかわまち"},{"k":"邑楽町","y":"おうら","p":"群馬県","t":"町","f":"おうらまち"},{"k":"甘楽町","y":"かんら","p":"群馬県","t":"町","f":"かんらまち"},{"k":"五霞町","y":"ごか","p":"茨城県","t":"町","f":"ごかまち"},{"k":"大網白里市","y":"おおあみしらさと","p":"千葉県","t":"市","f":"おおあみしらさとし"},{"k":"各務原市","y":"かかみがはら","p":"岐阜県","t":"市","f":"かかみがはらし"},{"k":"可児市","y":"かに","p":"岐阜県","t":"市","f":"かにし"},{"k":"御嵩町","y":"みたけ","p":"岐阜県","t":"町","f":"みたけちょう"},{"k":"揖斐川町","y":"いびがわ","p":"岐阜県","t":"町","f":"いびがわちょう"},{"k":"喬木村","y":"たかぎ","p":"長野県","t":"村","f":"たかぎむら"},{"k":"売木村","y":"うるぎ","p":"長野県","t":"村","f":"うるぎむら"},{"k":"阿智村","y":"あち","p":"長野県","t":"村","f":"あちむら"},{"k":"神津島村","y":"こうづしま","p":"東京都","t":"村","f":"こうづしまむら"},{"k":"青ヶ島村","y":"あおがしま","p":"東京都","t":"村","f":"あおがしまむら"},{"k":"四條畷市","y":"しじょうなわて","p":"大阪府","t":"市","f":"しじょうなわてし"},{"k":"交野市","y":"かたの","p":"大阪府","t":"市","f":"かたのし"},{"k":"枚方市","y":"ひらかた","p":"大阪府","t":"市","f":"ひらかたし"},{"k":"河内長野市","y":"かわちながの","p":"大阪府","t":"市","f":"かわちながのし"},{"k":"斑鳩町","y":"いかるが","p":"奈良県","t":"町","f":"いかるがちょう"},{"k":"田原本町","y":"たわらもと","p":"奈良県","t":"町","f":"たわらもとちょう"},{"k":"明日香村","y":"あすか","p":"奈良県","t":"村","f":"あすかむら"},{"k":"十津川村","y":"とつかわ","p":"奈良県","t":"村","f":"とつかわむら"},{"k":"御所市","y":"ごせ","p":"奈良県","t":"市","f":"ごせし"},{"k":"宇陀市","y":"うだ","p":"奈良県","t":"市","f":"うだし"},{"k":"江府町","y":"こうふ","p":"鳥取県","t":"町","f":"こうふちょう"},{"k":"邑南町","y":"おおなん","p":"島根県","t":"町","f":"おおなんちょう"},{"k":"宿毛市","y":"すくも","p":"高知県","t":"市","f":"すくもし"},{"k":"三次市","y":"みよし","p":"広島県","t":"市","f":"みよしし"},{"k":"安芸太田町","y":"あきおおた","p":"広島県","t":"町","f":"あきおおたちょう"},{"k":"北谷町","y":"ちゃたん","p":"沖縄県","t":"町","f":"ちゃたんちょう"},{"k":"中城村","y":"なかぐすく","p":"沖縄県","t":"村","f":"なかぐすくそん"},{"k":"北中城村","y":"きたなかぐすく","p":"沖縄県","t":"村","f":"きたなかぐすくそん"},{"k":"今帰仁村","y":"なきじん","p":"沖縄県","t":"村","f":"なきじんそん"},{"k":"南風原町","y":"はえばる","p":"沖縄県","t":"町","f":"はえばるちょう"},{"k":"宜野座村","y":"ぎのざ","p":"沖縄県","t":"村","f":"ぎのざそん"},{"k":"恩納村","y":"おんな","p":"沖縄県","t":"村","f":"おんなそん"},{"k":"読谷村","y":"よみたん","p":"沖縄県","t":"村","f":"よみたんそん"},{"k":"竹富町","y":"たけとみ","p":"沖縄県","t":"町","f":"たけとみちょう"},{"k":"与那国町","y":"よなぐに","p":"沖縄県","t":"町","f":"よなぐにちょう"},{"k":"金武町","y":"きん","p":"沖縄県","t":"町","f":"きんちょう"},{"k":"直方市","y":"のおがた","p":"福岡県","t":"市","f":"のおがたし"},{"k":"遠賀町","y":"おんが","p":"福岡県","t":"町","f":"おんがちょう"},{"k":"鞍手町","y":"くらて","p":"福岡県","t":"町","f":"くらてまち"},{"k":"篠栗町","y":"ささぐり","p":"福岡県","t":"町","f":"ささぐりまち"},{"k":"玖珠町","y":"くす","p":"大分県","t":"町","f":"くすまち"},{"k":"杵築市","y":"きつき","p":"大分県","t":"市","f":"きつきし"},{"k":"姶良市","y":"あいら","p":"鹿児島県","t":"市","f":"あいらし"},{"k":"曽於市","y":"そお","p":"鹿児島県","t":"市","f":"そおし"},{"k":"添田町","y":"そえだ","p":"福岡県","t":"町","f":"そえだまち"},{"k":"香春町","y":"かわら","p":"福岡県","t":"町","f":"かわらまち"},{"k":"養父市","y":"やぶ","p":"兵庫県","t":"市","f":"やぶし"},{"k":"上北山村","y":"かみきたやま","p":"奈良県","t":"村","f":"かみきたやまむら"},{"k":"下北山村","y":"しもきたやま","p":"奈良県","t":"村","f":"しもきたやまむら"},{"k":"東吉野村","y":"ひがしよしの","p":"奈良県","t":"村","f":"ひがしよしのむら"},{"k":"曽爾村","y":"そに","p":"奈良県","t":"村","f":"そにむら"},{"k":"御杖村","y":"みつえ","p":"奈良県","t":"村","f":"みつえむら"},{"k":"南牧村","y":"なんもく","p":"群馬県","t":"村","f":"なんもくむら"},{"k":"嬬恋村","y":"つまごい","p":"群馬県","t":"村","f":"つまごいむら"},{"k":"木祖村","y":"きそ","p":"長野県","t":"村","f":"きそむら"},{"k":"平谷村","y":"ひらや","p":"長野県","t":"村","f":"ひらやむら"},{"k":"根羽村","y":"ねば","p":"長野県","t":"村","f":"ねばむら"},{"k":"海士町","y":"あま","p":"島根県","t":"町","f":"あまちょう"},{"k":"知夫村","y":"ちぶ","p":"島根県","t":"村","f":"ちぶむら"},{"k":"田舎館村","y":"いなかだて","p":"青森県","t":"村","f":"いなかだてむら"},{"k":"蓬田村","y":"よもぎた","p":"青森県","t":"村","f":"よもぎたむら"},{"k":"大鰐町","y":"おおわに","p":"青森県","t":"町","f":"おおわにまち"},{"k":"最上町","y":"もがみ","p":"山形県","t":"町","f":"もがみまち"},{"k":"桂川町","y":"けいせん","p":"福岡県","t":"町","f":"けいせんまち"},{"k":"苅田町","y":"かんだ","p":"福岡県","t":"町","f":"かんだまち"},{"k":"国東市","y":"くにさき","p":"大分県","t":"市","f":"くにさきし"},{"k":"日出町","y":"ひじ","p":"大分県","t":"町","f":"ひじまち"},{"k":"指宿市","y":"いぶすき","p":"鹿児島県","t":"市","f":"いぶすきし"},{"k":"枕崎市","y":"まくらざき","p":"鹿児島県","t":"市","f":"まくらざきし"},{"k":"志布志市","y":"しぶし","p":"鹿児島県","t":"市","f":"しぶしし"},{"k":"豊見城市","y":"とみぐすく","p":"沖縄県","t":"市","f":"とみぐすくし"},{"k":"八重瀬町","y":"やえせ","p":"沖縄県","t":"町","f":"やえせちょう"},{"k":"鹿角市","y":"かづの","p":"秋田県","t":"市","f":"かづのし"},{"k":"廿日市市","y":"はつかいち","p":"広島県","t":"市","f":"はつかいちし"}];
 let order=[],idx=0,score=0,answered=false;
+function furusatoUrl(name){var inner="https://search.rakuten.co.jp/search/event/"+encodeURIComponent(name)+"/?ev=40";return "https://hb.afl.rakuten.co.jp/hgc/1e14c122.14f13954.1e14c123.defbd4e2/?pc="+encodeURIComponent(inner)+"&link_type=text&ut=eyJwYWdlIjoidXJsIiwidHlwZSI6InRleHQiLCJjb2wiOjF9";}
 // ゆるい判定用の正規化：カタカナ→ひらがな、大小仮名の統一、長音・記号・空白の除去
 function norm(s){
   if(!s)return "";
@@ -119,6 +138,9 @@ function showFb(ok,d){
   document.getElementById('mark').textContent=ok?'◯ 正解！':'✕ 残念…';
   document.getElementById('yomi').textContent=d.f;
   document.getElementById('loc').textContent=d.k+'（'+d.p+'）';
+  var fl=document.getElementById('furusato');
+  fl.href=furusatoUrl(d.k);
+  fl.textContent='🎁 '+d.k+'のふるさと納税を見る ＞';
   document.getElementById('answerCtrl').classList.add('hidden');
   document.getElementById('nextCtrl').classList.remove('hidden');
 }
@@ -137,14 +159,26 @@ function check(){
 }
 function giveup(){if(answered)return;showFb(false,DATA[order[idx]]);}
 function next(){idx++;if(idx>=DATA.length)finish();else render();}
+function rankOf(p){
+  if(p>=95)return{t:"難読マスター",e:"🏆",m:"ほぼ完璧！全国の難読地名を制覇するレベルです。"};
+  if(p>=80)return{t:"難読エキスパート",e:"🥇",m:"かなりの地名通。あと一歩でマスターです！"};
+  if(p>=60)return{t:"地名ツウ",e:"🎉",m:"なかなかの実力。読めた町も多かったのでは？"};
+  if(p>=30)return{t:"見習い探検家",e:"👍",m:"半分近く正解！ここから覚えていきましょう。"};
+  return{t:"難読ビギナー",e:"📖",m:"難読ぞろいでしたね。ぜひ再挑戦を！"};
+}
 function finish(){
   document.getElementById('game').classList.add('hidden');
   const r=document.getElementById('result');r.classList.remove('hidden');
   document.getElementById('scoreNum').textContent=score;
-  let rank;const p=score;
-  if(p>=90)rank='🏆 難読マスター！';else if(p>=70)rank='🎉 かなりの地名通！';
-  else if(p>=40)rank='👍 なかなかの実力！';else rank='📖 これを機に覚えよう！';
-  document.getElementById('rank').textContent=rank;
+  const info=rankOf(score);
+  document.getElementById('rank').textContent=info.e+' 称号：'+info.t;
+  document.getElementById('rmsg').textContent=info.m;
+  // Xシェア
+  const url='https://machi-chou-quiz.com/nandoku-quiz/';
+  const text='難読自治体名クイズ 100問に挑戦！\n100問中'+score+'問正解、称号は【'+info.t+'】でした'+info.e+'\nあなたはいくつ読める？';
+  const tags='#難読地名 #難読自治体名クイズ';
+  const share='https://x.com/intent/tweet?text='+encodeURIComponent(text+'\n'+tags+'\n')+'&url='+encodeURIComponent(url);
+  document.getElementById('shareX').href=share;
 }
 start();
 </script>
