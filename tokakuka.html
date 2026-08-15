@@ -282,9 +282,10 @@
             shareText = `【TOKAKUKAクイズ】「${currentFacility.name}」は都？区？\n引っかけ問題にやられた😇 あなたも挑戦してみて！👇\n`;
         }
         
-        const siteUrl = "https://machi-chou-quiz.com/tokakuka.html"; 
-        const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(siteUrl)}&hashtags=TOKAKUKA,都か区か`;
-
+        const siteUrl = "https://machi-chou-quiz.com/tokakuka.html";
+        const hashtags = "#TOKAKUKA #都か区か #東京 #クイズ";
+        const fullText = shareText + hashtags + "\n";
+        const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(fullText)}&url=${encodeURIComponent(siteUrl)}`;
         resultMsg.innerHTML += `
             <div id="share-btn-container" style="margin-top: 15px;">
                 <a href="${xShareUrl}" target="_blank" class="share-x-btn">
