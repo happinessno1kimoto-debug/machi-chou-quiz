@@ -1166,9 +1166,11 @@
             }
         }
         
-        const siteUrl = "https://machi-chou-quiz.com"; 
-        const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(siteUrl)}&hashtags=町名クイズ,まちかちょうか`;
-
+        const siteUrl = "https://machi-chou-quiz.com";
+        const hashtags = "#町名クイズ #まちかちょうか #クイズ #雑学";
+        const fullText = shareText + hashtags + "\n";
+        const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(fullText)}&url=${encodeURIComponent(siteUrl)}`;
+		
         resultMsg.innerHTML += `
             <div style="margin-top:15px; font-size:14px;">
                 <a href="${affiliateUrl}" target="_blank" style="color:#3498db; text-decoration:underline;">
