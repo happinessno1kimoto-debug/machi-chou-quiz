@@ -1,0 +1,502 @@
+<title>note公開キット</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+  :root {
+    --bg: #faf8f4;
+    --surface: #ffffff;
+    --surface-2: #f2efe7;
+    --ink: #1f2420;
+    --ink-muted: #63685f;
+    --ink-faint: #8b8f84;
+    --accent: #2f6f5e;
+    --accent-ink: #ffffff;
+    --accent-tint: #e7f1ec;
+    --border: #e4ddd0;
+    --border-strong: #cfc6b3;
+    --danger: #b3462f;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(31, 36, 32, 0.04), 0 4px 14px rgba(31, 36, 32, 0.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15181a;
+      --surface: #1d2124;
+      --surface-2: #23272a;
+      --ink: #edeee9;
+      --ink-muted: #a4a89f;
+      --ink-faint: #767a71;
+      --accent: #56bfa2;
+      --accent-ink: #0e1512;
+      --accent-tint: #1c2b26;
+      --border: #2c312f;
+      --border-strong: #3b423e;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15181a;
+    --surface: #1d2124;
+    --surface-2: #23272a;
+    --ink: #edeee9;
+    --ink-muted: #a4a89f;
+    --ink-faint: #767a71;
+    --accent: #56bfa2;
+    --accent-ink: #0e1512;
+    --accent-tint: #1c2b26;
+    --border: #2c312f;
+    --border-strong: #3b423e;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 8px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Zen Kaku Gothic New', system-ui, -apple-system, 'Hiragino Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.7;
+    padding-bottom: 64px;
+  }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+  a { color: var(--accent); }
+  a:hover { color: var(--accent); opacity: 0.85; }
+
+  header.top {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 18px 0;
+  }
+  header.top .title-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  header.top h1 {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+  header.top .sub {
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 0 0 auto;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--ink-muted);
+    font: inherit;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .tab[aria-selected="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px 18px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .day-panel { display: none; flex-direction: column; gap: 16px; }
+  .day-panel[data-active="true"] { display: flex; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 18px;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .card-head .label {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+  }
+
+  .article-title {
+    font-size: 21px;
+    font-weight: 900;
+    line-height: 1.5;
+    text-wrap: balance;
+    margin: 4px 0 10px;
+  }
+  .price-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-tint);
+    border-radius: 999px;
+    padding: 4px 12px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+  }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary.copied { background: var(--ink-muted); }
+  .btn-outline {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-outline svg { flex: 0 0 auto; }
+
+  .preview {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: var(--ink-muted);
+    max-height: 108px;
+    overflow: hidden;
+    position: relative;
+    white-space: pre-wrap;
+    margin-bottom: 12px;
+  }
+  .preview::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 36px;
+    background: linear-gradient(transparent, var(--surface-2));
+  }
+  .preview.expanded { max-height: none; }
+  .preview.expanded::after { display: none; }
+
+  .expand-toggle {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 0 12px;
+    cursor: pointer;
+  }
+
+  .char-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  .design-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    text-decoration: none;
+    background: var(--accent-tint);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--ink);
+  }
+  .design-link .t { font-weight: 700; font-size: 15px; }
+  .design-link .s { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
+
+  .x-note {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 14px;
+  }
+
+  .x-list { display: flex; flex-direction: column; gap: 10px; }
+  .x-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    background: var(--surface-2);
+  }
+  .x-item-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .x-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .x-label {
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .x-body {
+    font-size: 14px;
+    white-space: pre-wrap;
+    margin-bottom: 10px;
+  }
+  .x-item .btn { width: auto; padding: 8px 14px; font-size: 13px; }
+
+  .empty {
+    text-align: center;
+    color: var(--ink-faint);
+    padding: 40px 0;
+  }
+
+  footer.foot {
+    max-width: 640px;
+    margin: 24px auto 0;
+    padding: 0 18px;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .btn, .preview, .tab { transition: background-color 0.15s ease, color 0.15s ease; }
+  }
+</style>
+
+<header class="top">
+  <div class="title-row">
+    <h1>note公開キット</h1>
+    <span class="sub" id="day-count"></span>
+  </div>
+  <div class="tabs" id="tabs" role="tablist"></div>
+</header>
+
+<main id="main"></main>
+
+<footer class="foot">記事・表紙・X告知は note-drafts/ 配下の下書きから自動生成しています。公開後は note記事URLをXポストの [URL] に差し替えてください。</footer>
+
+<script>
+const DAYS = /*__KIT_DATA__*/null;
+
+const iconCopy = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+const iconCheck = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>';
+const iconExternal = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>';
+
+function copyText(text, btn) {
+  const done = () => {
+    const original = btn.dataset.originalLabel || btn.innerHTML;
+    btn.dataset.originalLabel = original;
+    btn.innerHTML = iconCheck + ' <span>コピーしました</span>';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = original;
+      btn.classList.remove('copied');
+    }, 1600);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+
+function fallbackCopy(text, done) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try { document.execCommand('copy'); done(); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+function fmtDate(iso) {
+  const [y, m, d] = iso.split('-');
+  return `${parseInt(m)}/${parseInt(d)}`;
+}
+
+function buildDayPanel(day, index) {
+  const panel = document.createElement('section');
+  panel.className = 'day-panel';
+  panel.dataset.active = index === 0 ? 'true' : 'false';
+  panel.id = `panel-${day.date}`;
+  panel.setAttribute('role', 'tabpanel');
+
+  // 記事カード
+  const articleCard = document.createElement('div');
+  articleCard.className = 'card';
+  articleCard.innerHTML = `
+    <div class="card-head"><span class="label">note有料記事</span></div>
+    <div class="article-title"></div>
+    <div style="margin-bottom:14px;"><span class="price-chip"></span></div>
+  `;
+  articleCard.querySelector('.article-title').textContent = day.title;
+  articleCard.querySelector('.price-chip').textContent = `¥ ${day.price}`;
+
+  const titleBtn = document.createElement('button');
+  titleBtn.className = 'btn btn-outline';
+  titleBtn.innerHTML = iconCopy + ' <span>タイトルをコピー</span>';
+  titleBtn.addEventListener('click', () => copyText(day.title, titleBtn));
+  articleCard.appendChild(titleBtn);
+  panel.appendChild(articleCard);
+
+  // 無料/有料パート
+  [
+    { key: 'freePart', label: '無料パート(冒頭に貼り付け)', text: day.freePart },
+    { key: 'paidPart', label: '有料パート(「続きを読むには」の後に貼り付け)', text: day.paidPart },
+  ].forEach(({ label, text }) => {
+    if (!text) return;
+    const card = document.createElement('div');
+    card.className = 'card';
+    const previewId = `prev-${day.date}-${Math.random().toString(36).slice(2, 8)}`;
+    card.innerHTML = `
+      <div class="card-head">
+        <span class="label">${label}</span>
+        <span class="char-count">${text.length.toLocaleString()}文字</span>
+      </div>
+      <div class="preview" id="${previewId}"></div>
+      <button class="expand-toggle" type="button">全文を表示</button>
+    `;
+    card.querySelector('.preview').textContent = text;
+    const preview = card.querySelector('.preview');
+    const toggle = card.querySelector('.expand-toggle');
+    toggle.addEventListener('click', () => {
+      const expanded = preview.classList.toggle('expanded');
+      toggle.textContent = expanded ? '折りたたむ' : '全文を表示';
+    });
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'btn btn-primary';
+    copyBtn.innerHTML = iconCopy + ' <span>本文をコピー</span>';
+    copyBtn.addEventListener('click', () => copyText(text, copyBtn));
+    card.appendChild(copyBtn);
+    panel.appendChild(card);
+  });
+
+  // デザインリンク
+  if (day.designUrl) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<div class="card-head"><span class="label">表紙・告知画像</span></div>`;
+    const link = document.createElement('a');
+    link.className = 'design-link';
+    link.href = day.designUrl;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.innerHTML = `<span><span class="t">デザイン案を開く(10パターン)</span><br><span class="s">気に入ったものをPNG書き出しして使えます</span></span>${iconExternal}`;
+    card.appendChild(link);
+    panel.appendChild(card);
+  }
+
+  // Xポスト
+  const xCard = document.createElement('div');
+  xCard.className = 'card';
+  const xPosts = day.xPosts || [];
+  xCard.innerHTML = `
+    <div class="card-head">
+      <span class="label">X告知ポスト</span>
+      <span class="char-count">${xPosts.length}本</span>
+    </div>
+    <div class="x-note">1日2本(朝7:30/夜21:00)を目安に、2週間かけて投稿する想定です。[URL] は note記事の公開後にURLを差し替えてください。</div>
+  `;
+  const list = document.createElement('div');
+  list.className = 'x-list';
+  xPosts.forEach((post) => {
+    const item = document.createElement('div');
+    item.className = 'x-item';
+    item.innerHTML = `
+      <div class="x-item-head"><span class="x-num">#${post.num}</span><span class="x-label">${post.label}</span></div>
+      <div class="x-body"></div>
+    `;
+    item.querySelector('.x-body').textContent = post.body;
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-outline';
+    btn.innerHTML = iconCopy + ' <span>コピー</span>';
+    btn.addEventListener('click', () => copyText(post.body, btn));
+    item.appendChild(btn);
+    list.appendChild(item);
+  });
+  xCard.appendChild(list);
+  panel.appendChild(xCard);
+
+  return panel;
+}
+
+function render() {
+  const tabsEl = document.getElementById('tabs');
+  const mainEl = document.getElementById('main');
+  const countEl = document.getElementById('day-count');
+
+  if (!DAYS || DAYS.length === 0) {
+    mainEl.innerHTML = '<div class="empty">まだ記事がありません</div>';
+    return;
+  }
+
+  countEl.textContent = `全${DAYS.length}日分`;
+
+  DAYS.forEach((day, i) => {
+    const tab = document.createElement('button');
+    tab.className = 'tab';
+    tab.textContent = fmtDate(day.date);
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-selected', 'false'));
+      document.querySelectorAll('.day-panel').forEach((p) => (p.dataset.active = 'false'));
+      tab.setAttribute('aria-selected', 'true');
+      document.getElementById(`panel-${day.date}`).dataset.active = 'true';
+    });
+    tabsEl.appendChild(tab);
+
+    mainEl.appendChild(buildDayPanel(day, i));
+  });
+}
+
+render();
+</script>

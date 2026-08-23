@@ -28,7 +28,19 @@
 5. **検品担当**: 別のサブエージェントを立てて記事を読ませ、「AIが書いたような定型表現・説明口調」を検出し、一人称の実体験として体温のある文章に書き直す(Claude自身の自己校正ではなく、独立した第三者視点でのチェックとして分離)
 6. **デザイン担当**: designスキルでnote表紙+告知画像のデザイン案を10パターン、Artifactキャンバスとして作成(ユーザーがPNG/PDFで書き出して使用)
 7. **営業担当**: X告知ポストを30本(切り口違い・時間帯違い)作成し、投稿スケジュール案(日時の割り振り)を用意
-8. `topics-log.md` に本日の実績を追記、コミット&プッシュ
+8. `node note-drafts/tools/build-kit.mjs` を実行し、「公開キット」(下記)を最新化してArtifactを再公開
+9. `topics-log.md` に本日の実績を追記、コミット&プッシュ
+
+## 公開キット(スマホ用まとめページ)
+
+記事本文・表紙デザインへのリンク・X告知30本を、スマホでコピペしやすい1枚のページにまとめたものです。日付タブで過去分にも切り替えられます。
+
+**URL: https://claude.ai/code/artifact/8668557c-cba1-4df9-859f-e6a95cf3d144**
+
+- `note-drafts/tools/build-kit.mjs` が `note-drafts/YYYY-MM-DD/{article.md, x-posts.md, design-brief.md}` を自動で読み取り、`note-drafts/tools/kit-template.html` に埋め込んでHTMLを生成する
+- 生成物はArtifactとして上記URLに毎回上書き公開する(`Artifact`ツールで同じURLに対して再publish。新しいURLを作らないこと)
+- 実行例: `node note-drafts/tools/build-kit.mjs /tmp/.../kit.generated.html` → 生成されたファイルをArtifactツールで同じURLに publish
+- 生成物(`kit.generated.html`)自体はリポジトリにコミットしない(ソースの `article.md` 等から毎回再生成される派生物のため)
 
 ## 現状できること / できないこと
 
@@ -54,6 +66,9 @@ note-drafts/
     article.md              ← note有料記事の下書き(執筆担当→検品担当を経た最終稿)
     x-posts.md               ← 営業担当作成、X告知ポスト30本+投稿スケジュール案
     design-brief.md          ← デザイン担当の表紙/告知画像コンセプト(Artifactキャンバスへのリンク)
+  tools/
+    build-kit.mjs             ← 公開キット生成スクリプト
+    kit-template.html         ← 公開キットのHTMLテンプレート
 ```
 
 ## ジャンル方針
