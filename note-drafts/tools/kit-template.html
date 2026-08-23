@@ -102,13 +102,14 @@
   .tabs::-webkit-scrollbar { display: none; }
   .tab {
     flex: 0 0 auto;
+    min-height: 44px;
     border: 1px solid var(--border-strong);
     background: var(--surface);
     color: var(--ink-muted);
     font: inherit;
     font-family: 'JetBrains Mono', monospace;
     font-size: 13px;
-    padding: 8px 14px;
+    padding: 8px 16px;
     border-radius: 999px;
     cursor: pointer;
   }
@@ -287,7 +288,7 @@
     white-space: pre-wrap;
     margin-bottom: 10px;
   }
-  .x-item .btn { width: auto; padding: 8px 14px; font-size: 13px; }
+  .x-item .btn { width: auto; min-height: 44px; padding: 8px 16px; font-size: 13px; }
 
   .empty {
     text-align: center;
@@ -451,9 +452,11 @@ function buildDayPanel(day, index) {
     const item = document.createElement('div');
     item.className = 'x-item';
     item.innerHTML = `
-      <div class="x-item-head"><span class="x-num">#${post.num}</span><span class="x-label">${post.label}</span></div>
+      <div class="x-item-head"><span class="x-num"></span><span class="x-label"></span></div>
       <div class="x-body"></div>
     `;
+    item.querySelector('.x-num').textContent = `#${post.num}`;
+    item.querySelector('.x-label').textContent = post.label;
     item.querySelector('.x-body').textContent = post.body;
     const btn = document.createElement('button');
     btn.className = 'btn btn-outline';

@@ -18,31 +18,36 @@ const dayDirs = fs
   .sort()
   .reverse();
 
-function parseArticle(text) {
+function parseArticle(text, day) {
   const titleMatch = text.match(/^#\s+(.+)$/m);
   const title = titleMatch ? titleMatch[1].trim() : '(タイトル未設定)';
+  if (!titleMatch) console.warn(`[${day}] article.md: タイトル行(# ...)が見つかりません`);
 
   const priceMatch = text.match(/価格案[:：]\s*([0-9,]+円)/);
   const price = priceMatch ? priceMatch[1] : '(価格未設定)';
+  if (!priceMatch) console.warn(`[${day}] article.md: 価格案の行が見つかりません`);
 
   const bodyStart = text.indexOf('\n---\n');
+  if (bodyStart < 0) console.warn(`[${day}] article.md: 本文区切りの "---" が見つかりません(全文をfreePart扱いにします)`);
   const body = bodyStart >= 0 ? text.slice(bodyStart + 5) : text;
 
   const paidMarker = '---ここから有料---';
   const paidIdx = body.indexOf(paidMarker);
+  if (paidIdx < 0) console.warn(`[${day}] article.md: "${paidMarker}" が見つかりません(paidPartが空になります)`);
   const freePart = (paidIdx >= 0 ? body.slice(0, paidIdx) : body).trim();
   const paidPart = paidIdx >= 0 ? body.slice(paidIdx + paidMarker.length).trim() : '';
 
   return { title, price, freePart, paidPart };
 }
 
-function parseXPosts(text) {
+function parseXPosts(text, day) {
   const posts = [];
   const re = /\*\*#(\d+)\(([^)]+)\)\*\*\s*\n```\n([\s\S]*?)\n```/g;
   let m;
   while ((m = re.exec(text))) {
     posts.push({ num: m[1], label: m[2].trim(), body: m[3].trim() });
   }
+  if (posts.length === 0) console.warn(`[${day}] x-posts.md: 投稿が1件もパースできませんでした(フォーマットを確認してください)`);
   return posts;
 }
 
@@ -59,8 +64,8 @@ for (const day of dayDirs) {
   const designBriefPath = path.join(dir, 'design-brief.md');
   if (!fs.existsSync(articlePath)) continue;
 
-  const article = parseArticle(fs.readFileSync(articlePath, 'utf8'));
-  const xPosts = fs.existsSync(xPostsPath) ? parseXPosts(fs.readFileSync(xPostsPath, 'utf8')) : [];
+  const article = parseArticle(fs.readFileSync(articlePath, 'utf8'), day);
+  const xPosts = fs.existsSync(xPostsPath) ? parseXPosts(fs.readFileSync(xPostsPath, 'utf8'), day) : [];
   const design = fs.existsSync(designBriefPath)
     ? parseDesignBrief(fs.readFileSync(designBriefPath, 'utf8'))
     : { url: null };
