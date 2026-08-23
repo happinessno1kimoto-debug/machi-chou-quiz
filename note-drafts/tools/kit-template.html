@@ -239,20 +239,34 @@
     color: var(--ink-faint);
   }
 
-  .design-link {
+  .design-note {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 10px;
+  }
+  .url-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    word-break: break-all;
+    margin-bottom: 12px;
+    -webkit-user-select: all;
+    user-select: all;
+  }
+  .fallback-link {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    justify-content: center;
+    gap: 6px;
     text-decoration: none;
-    background: var(--accent-tint);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    color: var(--ink);
+    color: var(--ink-faint);
+    font-size: 12px;
+    margin-top: 10px;
   }
-  .design-link .t { font-weight: 700; font-size: 15px; }
-  .design-link .s { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
 
   .x-note {
     font-size: 13px;
@@ -420,18 +434,33 @@ function buildDayPanel(day, index) {
     panel.appendChild(card);
   });
 
-  // デザインリンク
+  // デザインリンク(このページはサンドボックスされたiframe内で動くため、
+  // target="_blank" のリンク遷移がタップしても反応しないことがある。
+  // 確実に動くコピー方式を主導線にし、リンクは補助的に添える)
   if (day.designUrl) {
     const card = document.createElement('div');
     card.className = 'card';
-    card.innerHTML = `<div class="card-head"><span class="label">表紙・告知画像</span></div>`;
-    const link = document.createElement('a');
-    link.className = 'design-link';
-    link.href = day.designUrl;
-    link.target = '_blank';
-    link.rel = 'noopener';
-    link.innerHTML = `<span><span class="t">デザイン案を開く(10パターン)</span><br><span class="s">気に入ったものをPNG書き出しして使えます</span></span>${iconExternal}`;
-    card.appendChild(link);
+    card.innerHTML = `
+      <div class="card-head"><span class="label">表紙・告知画像</span></div>
+      <div class="design-note">表紙デザイン10パターンのページです。URLをコピーして、ブラウザで開いてください。</div>
+      <div class="url-display"></div>
+    `;
+    card.querySelector('.url-display').textContent = day.designUrl;
+
+    const copyUrlBtn = document.createElement('button');
+    copyUrlBtn.className = 'btn btn-primary';
+    copyUrlBtn.innerHTML = iconCopy + ' <span>デザイン案のURLをコピー</span>';
+    copyUrlBtn.addEventListener('click', () => copyText(day.designUrl, copyUrlBtn));
+    card.appendChild(copyUrlBtn);
+
+    const fallbackLink = document.createElement('a');
+    fallbackLink.className = 'fallback-link';
+    fallbackLink.href = day.designUrl;
+    fallbackLink.target = '_blank';
+    fallbackLink.rel = 'noopener';
+    fallbackLink.innerHTML = `<span>このリンクで開けることもあります</span>${iconExternal}`;
+    card.appendChild(fallbackLink);
+
     panel.appendChild(card);
   }
 
