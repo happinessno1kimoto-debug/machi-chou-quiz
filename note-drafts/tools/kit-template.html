@@ -372,6 +372,99 @@ function fallbackCopy(text, done) {
   document.body.removeChild(ta);
 }
 
+// noteの編集画面はリッチテキストエディタで、素のMarkdown記法(## や **)は
+// そのまま文字として貼り付けられてしまう。貼り付け先が解釈できるよう
+// text/html も一緒にクリップボードへ載せ、実際の見出し・太字として反映されるようにする。
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function inlineMd(s) {
+  return escapeHtml(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+
+// 行単位の状態遷移でHTML化する(見出しの直後にリストが続く、リストの後に
+// 地の文が続く、といった「空行を挟まない混在パターン」にも対応するため)
+function markdownToHtml(md) {
+  const lines = md.split('\n');
+  const html = [];
+  let mode = null; // null | 'p' | 'ul' | 'ol' | 'quote'
+
+  function close() {
+    if (mode === 'p') html.push('</p>');
+    else if (mode === 'ul') html.push('</ul>');
+    else if (mode === 'ol') html.push('</ol>');
+    else if (mode === 'quote') html.push('</p></blockquote>');
+    mode = null;
+  }
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed === '') { close(); continue; }
+
+    let m;
+    if ((m = /^###\s+(.*)$/.exec(trimmed))) {
+      close(); html.push(`<h3>${inlineMd(m[1])}</h3>`);
+    } else if ((m = /^##\s+(.*)$/.exec(trimmed))) {
+      close(); html.push(`<h2>${inlineMd(m[1])}</h2>`);
+    } else if ((m = /^-\s+(.*)$/.exec(trimmed))) {
+      if (mode !== 'ul') { close(); html.push('<ul>'); mode = 'ul'; }
+      html.push(`<li>${inlineMd(m[1])}</li>`);
+    } else if ((m = /^\d+\.\s+(.*)$/.exec(trimmed))) {
+      if (mode !== 'ol') { close(); html.push('<ol>'); mode = 'ol'; }
+      html.push(`<li>${inlineMd(m[1])}</li>`);
+    } else if ((m = /^>\s?(.*)$/.exec(trimmed))) {
+      if (mode !== 'quote') { close(); html.push('<blockquote><p>'); mode = 'quote'; }
+      else html.push('<br>');
+      html.push(inlineMd(m[1]));
+    } else {
+      if (mode !== 'p') { close(); html.push('<p>'); mode = 'p'; }
+      else html.push('<br>');
+      html.push(inlineMd(trimmed));
+    }
+  }
+  close();
+  return html.join('');
+}
+
+// リッチテキスト非対応の貼り付け先向けに、Markdown記号を取り除いた
+// 読みやすいプレーンテキストも作る(プレビュー表示にも流用)
+function markdownToPlainText(md) {
+  return md
+    .split('\n')
+    .map((line) => line
+      .replace(/^###\s+/, '')
+      .replace(/^##\s+/, '')
+      .replace(/^-\s+/, '・')
+      .replace(/^>\s?/, ''))
+    .join('\n')
+    .replace(/\*\*(.+?)\*\*/g, '$1');
+}
+
+function copyRichText(md, btn) {
+  const done = () => {
+    const original = btn.dataset.originalLabel || btn.innerHTML;
+    btn.dataset.originalLabel = original;
+    btn.innerHTML = iconCheck + ' <span>コピーしました</span>';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = original;
+      btn.classList.remove('copied');
+    }, 1600);
+  };
+  const plain = markdownToPlainText(md);
+  const html = markdownToHtml(md);
+  if (navigator.clipboard && window.isSecureContext && window.ClipboardItem) {
+    const item = new ClipboardItem({
+      'text/plain': new Blob([plain], { type: 'text/plain' }),
+      'text/html': new Blob([html], { type: 'text/html' }),
+    });
+    navigator.clipboard.write([item]).then(done).catch(() => copyText(plain, btn));
+  } else {
+    copyText(plain, btn);
+  }
+}
+
 function fmtDate(iso) {
   const [y, m, d] = iso.split('-');
   return `${parseInt(m)}/${parseInt(d)}`;
@@ -419,7 +512,7 @@ function buildDayPanel(day, index) {
       <div class="preview" id="${previewId}"></div>
       <button class="expand-toggle" type="button">全文を表示</button>
     `;
-    card.querySelector('.preview').textContent = text;
+    card.querySelector('.preview').textContent = markdownToPlainText(text);
     const preview = card.querySelector('.preview');
     const toggle = card.querySelector('.expand-toggle');
     toggle.addEventListener('click', () => {
@@ -428,8 +521,8 @@ function buildDayPanel(day, index) {
     });
     const copyBtn = document.createElement('button');
     copyBtn.className = 'btn btn-primary';
-    copyBtn.innerHTML = iconCopy + ' <span>本文をコピー</span>';
-    copyBtn.addEventListener('click', () => copyText(text, copyBtn));
+    copyBtn.innerHTML = iconCopy + ' <span>本文をコピー(見出し・太字も反映)</span>';
+    copyBtn.addEventListener('click', () => copyRichText(text, copyBtn));
     card.appendChild(copyBtn);
     panel.appendChild(card);
   });
