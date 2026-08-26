@@ -280,6 +280,7 @@
     border-radius: 10px;
     padding: 12px 14px;
     background: var(--surface-2);
+    transition: opacity 0.15s ease, border-color 0.15s ease;
   }
   .x-item-head {
     display: flex;
@@ -296,6 +297,7 @@
   .x-label {
     font-size: 12px;
     color: var(--ink-faint);
+    flex: 1 1 auto;
   }
   .x-body {
     font-size: 14px;
@@ -303,6 +305,50 @@
     margin-bottom: 10px;
   }
   .x-item .btn { width: auto; min-height: 44px; padding: 8px 16px; font-size: 13px; }
+
+  .next-badge {
+    display: none;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent-ink);
+    background: var(--accent);
+    border-radius: 999px;
+    padding: 3px 10px;
+    letter-spacing: 0.04em;
+    flex: 0 0 auto;
+  }
+  .x-item.next-up {
+    border-color: var(--accent);
+    border-width: 2px;
+    padding: 11px 13px;
+  }
+  .x-item.next-up .next-badge { display: inline-block; }
+
+  .x-posted-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--ink-muted);
+    flex: 0 0 auto;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .x-posted-toggle input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .x-item.posted {
+    opacity: 0.5;
+  }
+  .x-item.posted .x-body {
+    text-decoration: line-through;
+    text-decoration-color: var(--ink-faint);
+  }
+  .x-item.posted .btn { display: none; }
 
   .empty {
     text-align: center;
@@ -470,6 +516,28 @@ function fmtDate(iso) {
   return `${parseInt(m)}/${parseInt(d)}`;
 }
 
+// 投稿済みチェックはこの端末のブラウザだけに保存する(他の端末・他の人には共有されない)
+function postKey(date, num) {
+  return `note-kit-posted:${date}:${num}`;
+}
+
+function isPostPosted(date, num) {
+  try {
+    return localStorage.getItem(postKey(date, num)) === '1';
+  } catch (e) {
+    return false;
+  }
+}
+
+function setPostPosted(date, num, posted) {
+  try {
+    if (posted) localStorage.setItem(postKey(date, num), '1');
+    else localStorage.removeItem(postKey(date, num));
+  } catch (e) {
+    // 保存できない環境(プライベートブラウズ等)ではチェックが保持されないだけで、コピー機能自体には影響しない
+  }
+}
+
 function buildDayPanel(day, index) {
   const panel = document.createElement('section');
   panel.className = 'day-panel';
@@ -564,22 +632,56 @@ function buildDayPanel(day, index) {
   xCard.innerHTML = `
     <div class="card-head">
       <span class="label">X告知ポスト</span>
-      <span class="char-count">${xPosts.length}本</span>
+      <span class="char-count" data-progress></span>
     </div>
-    <div class="x-note">1日2本(朝7:30/夜21:00)を目安に、2週間かけて投稿する想定です。[URL] は note記事の公開後にURLを差し替えてください。</div>
+    <div class="x-note">1日2本(朝7:30/夜21:00)を目安に、2週間かけて投稿する想定です。投稿したらチェックを付けると、次に投稿するものが分かりやすくなります(このチェックはこの端末だけに保存されます)。[URL] は note記事の公開後にURLを差し替えてください。</div>
   `;
+  const progressEl = xCard.querySelector('[data-progress]');
   const list = document.createElement('div');
   list.className = 'x-list';
+
+  const updateProgress = () => {
+    const done = xPosts.filter((p) => isPostPosted(day.date, p.num)).length;
+    progressEl.textContent = `${done}/${xPosts.length}本 投稿済み`;
+  };
+
+  const refreshNextUp = () => {
+    list.querySelectorAll('.x-item').forEach((el) => el.classList.remove('next-up'));
+    const next = Array.from(list.querySelectorAll('.x-item')).find((el) => !el.classList.contains('posted'));
+    if (next) next.classList.add('next-up');
+  };
+
   xPosts.forEach((post) => {
     const item = document.createElement('div');
     item.className = 'x-item';
     item.innerHTML = `
-      <div class="x-item-head"><span class="x-num"></span><span class="x-label"></span></div>
+      <div class="x-item-head">
+        <span class="x-num"></span><span class="x-label"></span>
+        <span class="next-badge">次はこれ</span>
+        <label class="x-posted-toggle">
+          <input type="checkbox" />
+          <span>投稿済み</span>
+        </label>
+      </div>
       <div class="x-body"></div>
     `;
     item.querySelector('.x-num').textContent = `#${post.num}`;
     item.querySelector('.x-label').textContent = post.label;
     item.querySelector('.x-body').textContent = post.body;
+
+    const checkbox = item.querySelector('input[type="checkbox"]');
+    const applyState = (posted) => {
+      item.classList.toggle('posted', posted);
+      checkbox.checked = posted;
+    };
+    applyState(isPostPosted(day.date, post.num));
+    checkbox.addEventListener('change', () => {
+      setPostPosted(day.date, post.num, checkbox.checked);
+      applyState(checkbox.checked);
+      updateProgress();
+      refreshNextUp();
+    });
+
     const btn = document.createElement('button');
     btn.className = 'btn btn-outline';
     btn.innerHTML = iconCopy + ' <span>コピー</span>';
@@ -589,6 +691,9 @@ function buildDayPanel(day, index) {
   });
   xCard.appendChild(list);
   panel.appendChild(xCard);
+
+  updateProgress();
+  refreshNextUp();
 
   return panel;
 }
